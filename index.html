@@ -452,7 +452,17 @@
         const API_URL = 'https://diary-3byr.onrender.com';
         let theme = localStorage.getItem('theme') || 'light';
         let currentEntryId = null;
-    
+
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('diaryEntries').style.opacity = '0.5';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('diaryEntries').style.opacity = '1';
+        }
         function toggleTheme() {
             theme = theme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
@@ -469,15 +479,7 @@
         updateThemeIcon();
         document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-        function showLoading() {
-            document.getElementById('loading').style.display = 'flex';
-            document.getElementById('diaryEntries').style.opacity = '0.5';
-        }
-
-        function hideLoading() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('diaryEntries').style.opacity = '1';
-        }
+        
 
         function showMessage(type, message) {
             const element = document.getElementById(`${type}Message`);
@@ -516,7 +518,10 @@
 
         async function incrementVisitors() {
             try {
-                await fetch(`${API_URL}/visitors/increment`, { method: 'POST' });
+                const response = await fetch(`${API_URL}/visitors/increment`, { 
+                    method: 'POST'
+                });
+                if (!response.ok) throw new Error('Failed to increment visitors');
                 updateVisitorCount();
             } catch (error) {
                 console.error('Error incrementing visitors:', error);
@@ -526,6 +531,7 @@
         async function updateVisitorCount() {
             try {
                 const response = await fetch(`${API_URL}/visitors`);
+                if (!response.ok) throw new Error('Failed to fetch visitor count');
                 const data = await response.json();
                 document.getElementById('visitorCount').textContent = data.count.toLocaleString();
             } catch (error) {
@@ -543,10 +549,10 @@
                         ${entry.date}
                     </div>
                     <div class="entry-actions">
-                        <button class="entry-action-btn edit" onclick="editEntry(${entry.id})">
+                        <button class="entry-action-btn edit" onclick="editEntry('${entry.id}')">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="entry-action-btn delete" onclick="deleteEntry(${entry.id})">
+                        <button class="entry-action-btn delete" onclick="deleteEntry('${entry.id}')">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -569,7 +575,8 @@
                 document.getElementById('saveButton').textContent = 'Update Entry';
                 openModal();
             } catch (error) {
-                showMessage('error', error.message);
+                showMessage('error', 'Failed to load entry for editing');
+                console.error('Error editing entry:', error);
             }
         }
 
@@ -587,12 +594,14 @@
                     }
                 });
 
-                if (!response.ok) throw new Error('Invalid authentication code');
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Failed to delete entry');
 
                 showMessage('success', 'Entry deleted successfully');
                 await fetchEntries();
             } catch (error) {
                 showMessage('error', error.message);
+                console.error('Error deleting entry:', error);
             }
         }
 
@@ -667,15 +676,15 @@
                     body: JSON.stringify(body)
                 });
 
-                if (!response.ok) {
-                    throw new Error('Invalid authentication code');
-                }
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Operation failed');
 
                 showMessage('success', `Entry ${entryId ? 'updated' : 'added'} successfully`);
                 await fetchEntries();
                 closeModal();
             } catch (error) {
                 showMessage('error', error.message);
+                console.error('Error saving entry:', error);
             } finally {
                 saveButton.disabled = false;
                 saveButton.innerHTML = entryId ? 'Update Entry' : 'Save Entry';
