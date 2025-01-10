@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Diary</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #fafafa;
+            --text-color: #111;
+            --card-bg: white;
+            --shadow-color: rgba(0,0,0,0.1);
+            --border-color: #ddd;
+            --button-hover: #f5f5f5;
+            --accent-color: #2563eb;
+            --danger-color: #dc2626;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #fff;
+            --card-bg: #2d2d2d;
+            --shadow-color: rgba(0,0,0,0.3);
+            --border-color: #404040;
+            --button-hover: #3d3d3d;
+            --accent-color: #60a5fa;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            padding: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            flex-grow: 1;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .visitor-count {
+            font-size: 0.875rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            transition: transform 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+        }
+
+        .search-container {
+            position: sticky;
+            top: 1rem;
+            z-index: 10;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: 0 4px 6px var(--shadow-color);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 6px 8px var(--shadow-color);
+        }
+
+        .diary-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .entry {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .entry-date {
+            font-size: 0.875rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .entry:hover .entry-actions {
+            opacity: 1;
+        }
+
+        .entry-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .entry-action-btn:hover {
+            background: var(--button-hover);
+        }
+
+        .entry-action-btn.delete:hover {
+            color: var(--danger-color);
+        }
+
+        .entry-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-color);
+            white-space: pre-wrap;
+        }
+
+        .new-entry {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: all 0.3s;
+            z-index: 100;
+            border: none;
+        }
+
+        .new-entry:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 600px;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px var(--shadow-color);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            line-height: 1.7;
+            resize: vertical;
+        }
+
+        textarea:focus, .auth-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .save-btn {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .save-btn:hover {
+            filter: brightness(110%);
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn {
+            background: var(--button-hover);
+            color: var(--text-color);
+        }
+
+        .cancel-btn:hover {
+            background: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .about-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 3rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .about-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .about-section p {
+            line-height: 1.7;
+            color: var(--text-color);
+        }
+
+        .loading {
+            display: none;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-color);
+        }
+
+        .error-message {
+            display: none;
+            background: var(--danger-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            display: none;
+            background: #22c55e;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                padding: 1rem 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .entry {
+                padding: 1.5rem;
+            }
+
+            .entry-actions {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Diary</h1>
+                <div class="visitor-count">
+                    <i class="fas fa-eye"></i>
+                    <span id="visitorCount">0</span> visitors
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search entries..." id="searchInput">
+        </div>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+        </div>
+
+        <div class="diary-container" id="diaryEntries"></div>
+
+        <div class="about-section">
+            <h2>About</h2>
+            <p>Welcome, i use this place as a little diary for me. You're free to read :)</p>
+        </div>
+    </div>
+
+    <button class="new-entry" id="newEntryBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <div class="modal" id="entryModal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">New Entry</h2>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+            <form id="entryForm">
+                <input type="hidden" id="entryId">
+                <input type="password" class="auth-input" id="authCode" placeholder="Enter authentication code">
+                <textarea id="entryText" placeholder="What's on your mind?"></textarea>
+                <div class="modal-buttons">
+                    <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="save-btn" id="saveButton">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://diary-3byr.onrender.com';
+        let theme = localStorage.getItem('theme') || 'light';
+        let currentEntryId = null;
+        
+        // Theme functionality
+        function toggleTheme() {
+            theme = theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Initialize theme
+        document.documentElement.setAttribute('data-theme', theme);
+        updateThemeIcon();
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+        // Loading state
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('diaryEntries').style.opacity = '0.5';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('diaryEntries').style.opacity = '1';
+        }
+
+        // Message handling
+        function showMessage(type, message) {
+            const element = document.getElementById(`${type}Message`);
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+
+        // Fetch and display entries
+        async function fetchEntries() {
+            showLoading();
+            try {
+                const response = await fetch(`${API_URL}/entries`);
+                if (!response.ok) throw new Error('Failed to fetch entries');
+                
+                const entries = await response.json();
+                const container = document.getElementById('diaryEntries');
+                container.innerHTML = '';
+                
+                if (entries.length === 0) {
+                    container.innerHTML = '<div class="entry"><div class="entry-content">No entries yet.</div></div>';
+                    return;
+                }
+
+                entries.forEach(entry => {
+                    container.appendChild(createEntryElement(entry));
+                });
+            } catch (error) {
+                showMessage('error', 'Failed to load entries. Please try again later.');
+                console.error('Error fetching entries:', error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Visitor count functionality
+        async function incrementVisitors() {
+            try {
+                await fetch(`${API_URL}/visitors/increment`, { method: 'POST' });
+                updateVisitorCount();
+            } catch (error) {
+                console.error('Error incrementing visitors:', error);
+            }
+        }
+
+        async function updateVisitorCount() {
+            try {
+                const response = await fetch(`${API_URL}/visitors`);
+                const data = await response.json();
+                document.getElementById('visitorCount').textContent = data.count.toLocaleString();
+            } catch (error) {
+                console.error('Error fetching visitor count:', error);
+            }
+        }
+
+        // Entry manipulation
+        function createEntryElement(entry) {
+            const div = document.createElement('div');
+            div.className = 'entry';
+            div.innerHTML = `
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <i class="fas fa-calendar"></i>
+                        ${entry.date}
+                    </div>
+                    <div class="entry-actions">
+                        <button class="entry-action-btn edit" onclick="editEntry(${entry.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="entry-action-btn delete" onclick="deleteEntry(${entry.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="entry-content">${entry.content}</div>
+            `;
+            return div;
+        }
+
+        async function editEntry(id) {
+            try {
+                const entries = await (await fetch(`${API_URL}/entries`)).json();
+                const entry = entries.find(e => e.id === id);
+                if (!entry) throw new Error('Entry not found');
+
+                currentEntryId = id;
+                document.getElementById('modalTitle').textContent = 'Edit Entry';
+                document.getElementById('entryId').value = id;
+                document.getElementById('entryText').value = entry.content;
+                document.getElementById('saveButton').textContent = 'Update Entry';
+                openModal();
+            } catch (error) {
+                showMessage('error', error.message);
+            }
+        }
+
+        async function deleteEntry(id) {
+            if (!confirm('Are you sure you want to delete this entry?')) return;
+
+            const authCode = prompt('Please enter your authentication code to delete this entry:');
+            if (!authCode) return;
+
+            try {
+                const response = await fetch(`${API_URL}/entries/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-Auth-Code': authCode
+                    }
+                });
+
+                if (!response.ok) throw new Error('Invalid authentication code');
+
+                showMessage('success', 'Entry deleted successfully');
+                await fetchEntries();
+            } catch (error) {
+                showMessage('error', error.message);
+            }
+        }
+
+        // Modal functionality
+        const modal = document.getElementById('entryModal');
+        const newEntryBtn = document.getElementById('newEntryBtn');
+
+        function openModal() {
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+            document.getElementById('authCode').focus();
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                resetForm();
+            }, 300);
+        }
+
+        function resetForm() {
+            document.getElementById('entryForm').reset();
+            document.getElementById('modalTitle').textContent = 'New Entry';
+            document.getElementById('entryId').value = '';
+            document.getElementById('saveButton').textContent = 'Save Entry';
+            currentEntryId = null;
+        }
+
+        // Form submission
+        document.getElementById('entryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const content = document.getElementById('entryText').value;
+            const authCode = document.getElementById('authCode').value;
+            const entryId = document.getElementById('entryId').value;
+            
+            if (!content.trim()) {
+                showMessage('error', 'Please enter some content for your entry');
+                return;
+            }
+
+            if (!authCode.trim()) {
+                showMessage('error', 'Please enter the authentication code');
+                return;
+            }
+
+            const saveButton = document.getElementById('saveButton');
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                const url = entryId ? 
+                    `${API_URL}/entries/${entryId}` :
+                    `${API_URL}/entries`;
+
+                const method = entryId ? 'PUT' : 'POST';
+                const body = entryId ? 
+                    { content } :
+                    {
+                        date: new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }),
+                        content
+                    };
+
+                const response = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Code': authCode
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Invalid authentication code');
+                }
+
+                showMessage('success', `Entry ${entryId ? 'updated' : 'added'} successfully`);
+                await fetchEntries();
+                closeModal();
+            } catch (error) {
+                showMessage('error', error.message);
+            } finally {
+                saveButton.disabled = false;
+                saveButton.innerHTML = entryId ? 'Update Entry' : 'Save Entry';
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchText = e.target.value.toLowerCase();
+            document.querySelectorAll('.entry').forEach(entry => {
+                const content = entry.textContent.toLowerCase();
+                entry.style.display = content.includes(searchText) ? 'block' : 'none';
+            });
+        });
+
+        // Event listeners
+        newEntryBtn.addEventListener('click', openModal);
+        window.onclick = (event) => {
+            if (event.target === modal) closeModal();
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchEntries();
+            incrementVisitors();
+        });
+    </script>
+</body>
+</html>
