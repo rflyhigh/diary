@@ -7,6 +7,7 @@ import time
 import requests
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from bson import ObjectId
 from functools import wraps
 
@@ -15,14 +16,21 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-client = MongoClient(os.getenv('MONGO_URI'))
-db = client[os.getenv('DB_NAME', 'diary_db')]
+try:
+    client = MongoClient(os.getenv('MONGODB_URI'), serverSelectionTimeoutMS=5000)
+    client.admin.command('ping')
+    db = client[os.getenv('MONGODB_DB', 'diary_db')]
+    print("Connected to MongoDB successfully")
+except (ConnectionFailure, ServerSelectionTimeoutError) as e:
+    print(f"Failed to connect to MongoDB: {e}")
 
 def init_db():
-    if db.visitors.count_documents({}) == 0:
-        db.visitors.insert_one({'count': 0})
-
-init_db()
+    try:
+        if db.visitors.count_documents({}) == 0:
+            db.visitors.insert_one({'count': 0})
+            print("Initialized visitors collection")
+    except Exception as e:
+        print(f"Database initialization error: {e}")
 
 def require_auth(f):
     @wraps(f)
@@ -38,12 +46,12 @@ def ping_self():
         try:
             app_url = os.getenv('APP_URL')
             if app_url:
-                response = requests.get(app_url, timeout=30)
+                response = requests.get(app_url, timeout=10)
                 if response.status_code != 200:
                     print(f"Ping failed with status code: {response.status_code}")
         except Exception as e:
             print(f"Ping error: {str(e)}")
-        time.sleep(300) 
+        time.sleep(300)  # 5 minutes
 
 if os.getenv('ENVIRONMENT') == 'production':
     ping_thread = threading.Thread(target=ping_self, daemon=True)
@@ -54,13 +62,14 @@ def get_entries():
     try:
         entries = list(db.entries.find({}, {'_id': 1, 'date': 1, 'content': 1})
                       .sort('created_at', -1))
-    
+        
         for entry in entries:
             entry['id'] = str(entry.pop('_id'))
         
         return jsonify(entries)
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error fetching entries: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
 @app.route('/entries', methods=['POST'])
 @require_auth
@@ -83,7 +92,8 @@ def add_entry():
             'id': str(result.inserted_id)
         }), 201
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error adding entry: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
 @app.route('/entries/<entry_id>', methods=['PUT'])
 @require_auth
@@ -103,7 +113,8 @@ def update_entry(entry_id):
 
         return jsonify({'message': 'Entry updated successfully'})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error updating entry: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
 @app.route('/entries/<entry_id>', methods=['DELETE'])
 @require_auth
@@ -116,26 +127,32 @@ def delete_entry(entry_id):
 
         return jsonify({'message': 'Entry deleted successfully'})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error deleting entry: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
 @app.route('/visitors', methods=['GET'])
 def get_visitors():
     try:
         visitor_doc = db.visitors.find_one({})
+        if visitor_doc is None:
+            return jsonify({'count': 0})
         return jsonify({'count': visitor_doc['count']})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error fetching visitors: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
 @app.route('/visitors/increment', methods=['POST'])
 def increment_visitors():
     try:
         db.visitors.update_one(
             {},
-            {'$inc': {'count': 1}}
+            {'$inc': {'count': 1}},
+            upsert=True
         )
         return jsonify({'message': 'Visitor count incremented'})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error incrementing visitors: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
 @app.errorhandler(404)
 def not_found(e):
@@ -146,4 +163,6 @@ def server_error(e):
     return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
+    port = int(os.getenv('PORT', 5000))
+    init_db()
+    app.run(host='0.0.0.0', port=port)
