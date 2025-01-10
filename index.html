@@ -452,8 +452,7 @@
         const API_URL = 'https://diary-3byr.onrender.com';
         let theme = localStorage.getItem('theme') || 'light';
         let currentEntryId = null;
-        
-        // Theme functionality
+    
         function toggleTheme() {
             theme = theme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
@@ -466,12 +465,10 @@
             icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
         }
 
-        // Initialize theme
         document.documentElement.setAttribute('data-theme', theme);
         updateThemeIcon();
         document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-        // Loading state
         function showLoading() {
             document.getElementById('loading').style.display = 'flex';
             document.getElementById('diaryEntries').style.opacity = '0.5';
@@ -482,7 +479,6 @@
             document.getElementById('diaryEntries').style.opacity = '1';
         }
 
-        // Message handling
         function showMessage(type, message) {
             const element = document.getElementById(`${type}Message`);
             element.textContent = message;
@@ -491,8 +487,7 @@
                 element.style.display = 'none';
             }, 3000);
         }
-
-        // Fetch and display entries
+        
         async function fetchEntries() {
             showLoading();
             try {
@@ -519,7 +514,6 @@
             }
         }
 
-        // Visitor count functionality
         async function incrementVisitors() {
             try {
                 await fetch(`${API_URL}/visitors/increment`, { method: 'POST' });
@@ -539,7 +533,6 @@
             }
         }
 
-        // Entry manipulation
         function createEntryElement(entry) {
             const div = document.createElement('div');
             div.className = 'entry';
@@ -603,7 +596,6 @@
             }
         }
 
-        // Modal functionality
         const modal = document.getElementById('entryModal');
         const newEntryBtn = document.getElementById('newEntryBtn');
 
@@ -629,7 +621,6 @@
             currentEntryId = null;
         }
 
-        // Form submission
         document.getElementById('entryForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const content = document.getElementById('entryText').value;
@@ -691,7 +682,6 @@
             }
         });
 
-        // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchText = e.target.value.toLowerCase();
             document.querySelectorAll('.entry').forEach(entry => {
@@ -700,13 +690,11 @@
             });
         });
 
-        // Event listeners
         newEntryBtn.addEventListener('click', openModal);
         window.onclick = (event) => {
             if (event.target === modal) closeModal();
         };
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             fetchEntries();
             incrementVisitors();
