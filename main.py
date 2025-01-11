@@ -10,6 +10,7 @@ from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from bson import ObjectId
 from functools import wraps
+import pytz
 
 load_dotenv()
 
@@ -53,11 +54,16 @@ def ping_self():
             print(f"Ping error: {str(e)}")
         time.sleep(300)  # 5 minutes
 
-if os.getenv('ENVIRONMENT') == 'production':
-    ping_thread = threading.Thread(target=ping_self, daemon=True)
-    ping_thread.start()
+@app.route('/auth', methods=['POST'])
+def authenticate():
+    data = request.json
+    auth_code = data.get('authCode')
+    if auth_code != os.getenv('AUTH_CODE'):
+        return jsonify({'error': 'Invalid authentication code'}), 401
+    return jsonify({'message': 'Authentication successful'})
 
 @app.route('/entries', methods=['GET'])
+@require_auth
 def get_entries():
     try:
         entries = list(db.entries.find({}, {'_id': 1, 'date': 1, 'content': 1})
@@ -82,7 +88,7 @@ def add_entry():
         entry = {
             'date': data['date'],
             'content': data['content'],
-            'created_at': datetime.datetime.utcnow()
+            'created_at': datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
         }
         
         result = db.entries.insert_one(entry)
@@ -131,6 +137,7 @@ def delete_entry(entry_id):
         return jsonify({'error': 'Database error'}), 500
 
 @app.route('/visitors', methods=['GET'])
+@require_auth
 def get_visitors():
     try:
         visitor_doc = db.visitors.find_one({})
@@ -142,6 +149,7 @@ def get_visitors():
         return jsonify({'error': 'Database error'}), 500
 
 @app.route('/visitors/increment', methods=['POST'])
+@require_auth
 def increment_visitors():
     try:
         db.visitors.update_one(
@@ -165,4 +173,9 @@ def server_error(e):
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     init_db()
+    
+    if os.getenv('ENVIRONMENT') == 'production':
+        ping_thread = threading.Thread(target=ping_self, daemon=True)
+        ping_thread.start()
+    
     app.run(host='0.0.0.0', port=port)
