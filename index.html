@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diary</title>
+    <title>Private Diary</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
@@ -327,25 +327,6 @@
             transform: translateY(-1px);
         }
 
-        .about-section {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 12px;
-            margin-top: 3rem;
-            box-shadow: 0 2px 4px var(--shadow-color);
-        }
-
-        .about-section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-color);
-        }
-
-        .about-section p {
-            line-height: 1.7;
-            color: var(--text-color);
-        }
-
         .loading {
             display: none;
             justify-content: center;
@@ -371,6 +352,29 @@
             margin-bottom: 1rem;
         }
 
+        .auth-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-color);
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px var(--shadow-color);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .auth-card h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-color);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -392,59 +396,71 @@
                 opacity: 1;
             }
         }
+
+        #mainContent {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>Dear, Diary</h1>
-                <div class="visitor-count">
-                    <i class="fas fa-eye"></i>
-                    <span id="visitorCount">0</span> visitors
-                </div>
-            </div>
-            <div class="header-actions">
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </header>
-
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search entries..." id="searchInput">
-        </div>
-
-        <div class="loading" id="loading">
-            <i class="fas fa-spinner fa-spin fa-2x"></i>
-        </div>
-
-        <div class="diary-container" id="diaryEntries"></div>
-
-        <div class="about-section">
-            <h2>About</h2>
-            <p>Welcome, i use this place as a little diary for me. You're free to read :)</p>
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-card">
+            <h2>Private Diary</h2>
+            <div class="error-message" id="authError"></div>
+            <form id="authForm">
+                <input type="password" class="auth-input" id="initialAuth" placeholder="Enter authentication code" required>
+                <button type="submit" class="save-btn" style="width: 100%">Access Diary</button>
+            </form>
         </div>
     </div>
 
-    <button class="new-entry" id="newEntryBtn">
-        <i class="fas fa-plus"></i>
-    </button>
-
-    <div class="modal" id="entryModal">
-        <div class="modal-content">
-            <h2 class="modal-title" id="modalTitle">New Entry</h2>
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-            <form id="entryForm">
-                <input type="hidden" id="entryId">
-                <input type="password" class="auth-input" id="authCode" placeholder="Enter authentication code">
-                <textarea id="entryText" placeholder="What's on your mind?"></textarea>
-                <div class="modal-buttons">
-                    <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="save-btn" id="saveButton">Save Entry</button>
+    <div id="mainContent">
+        <div class="container">
+            <header>
+                <div class="header-content">
+                    <h1>Dear, Diary</h1>
+                    <div class="visitor-count">
+                        <i class="fas fa-eye"></i>
+                        <span id="visitorCount">0</span> visitors
+                    </div>
                 </div>
-            </form>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search entries..." id="searchInput">
+            </div>
+
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+            </div>
+
+            <div class="diary-container" id="diaryEntries"></div>
+        </div>
+
+        <button class="new-entry" id="newEntryBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div class="modal" id="entryModal">
+            <div class="modal-content">
+                <h2 class="modal-title" id="modalTitle">New Entry</h2>
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+                <form id="entryForm">
+                    <input type="hidden" id="entryId">
+                    <input type="password" class="auth-input" id="authCode" placeholder="Confirm authentication code">
+                    <textarea id="entryText" placeholder="What's on your mind?"></textarea>
+                    <div class="modal-buttons">
+                        <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="save-btn" id="saveButton">Save Entry</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -452,7 +468,41 @@
         const API_URL = 'https://diary-3byr.onrender.com';
         let theme = localStorage.getItem('theme') || 'light';
         let currentEntryId = null;
+        let authToken = '';
 
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const authCode = document.getElementById('initialAuth').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/auth`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ authCode })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Authentication failed');
+                }
+
+                authToken = authCode;
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                fetchEntries();
+                incrementVisitors();
+            } catch (error) {
+                const authError = document.getElementById('authError');
+                authError.textContent = error.message;
+                authError.style.display = 'block';
+                setTimeout(() => {
+                    authError.style.display = 'none';
+                }, 3000);
+            }
+        });
 
         function showLoading() {
             document.getElementById('loading').style.display = 'flex';
@@ -463,6 +513,7 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('diaryEntries').style.opacity = '1';
         }
+
         function toggleTheme() {
             theme = theme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
@@ -479,8 +530,6 @@
         updateThemeIcon();
         document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-        
-
         function showMessage(type, message) {
             const element = document.getElementById(`${type}Message`);
             element.textContent = message;
@@ -491,9 +540,14 @@
         }
         
         async function fetchEntries() {
+            if (!authToken) return;
             showLoading();
             try {
-                const response = await fetch(`${API_URL}/entries`);
+                const response = await fetch(`${API_URL}/entries`, {
+                    headers: {
+                        'X-Auth-Code': authToken
+                    }
+                });
                 if (!response.ok) throw new Error('Failed to fetch entries');
                 
                 const entries = await response.json();
@@ -519,7 +573,10 @@
         async function incrementVisitors() {
             try {
                 const response = await fetch(`${API_URL}/visitors/increment`, { 
-                    method: 'POST'
+                    method: 'POST',
+                    headers: {
+                        'X-Auth-Code': authToken
+                    }
                 });
                 if (!response.ok) throw new Error('Failed to increment visitors');
                 updateVisitorCount();
@@ -530,7 +587,11 @@
 
         async function updateVisitorCount() {
             try {
-                const response = await fetch(`${API_URL}/visitors`);
+                const response = await fetch(`${API_URL}/visitors`, {
+                    headers: {
+                        'X-Auth-Code': authToken
+                    }
+                });
                 if (!response.ok) throw new Error('Failed to fetch visitor count');
                 const data = await response.json();
                 document.getElementById('visitorCount').textContent = data.count.toLocaleString();
@@ -564,7 +625,12 @@
 
         async function editEntry(id) {
             try {
-                const entries = await (await fetch(`${API_URL}/entries`)).json();
+                const response = await fetch(`${API_URL}/entries`, {
+                    headers: {
+                        'X-Auth-Code': authToken
+                    }
+                });
+                const entries = await response.json();
                 const entry = entries.find(e => e.id === id);
                 if (!entry) throw new Error('Entry not found');
 
@@ -583,14 +649,11 @@
         async function deleteEntry(id) {
             if (!confirm('Are you sure you want to delete this entry?')) return;
 
-            const authCode = prompt('Please enter your authentication code to delete this entry:');
-            if (!authCode) return;
-
             try {
                 const response = await fetch(`${API_URL}/entries/${id}`, {
                     method: 'DELETE',
                     headers: {
-                        'X-Auth-Code': authCode
+                        'X-Auth-Code': authToken
                     }
                 });
 
@@ -629,11 +692,49 @@
             document.getElementById('saveButton').textContent = 'Save Entry';
             currentEntryId = null;
         }
+        async function saveEntry(entryId, content) {
+            const now = new Date();
+            
+            const dateFormatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZoneName: undefined
+            });
+            
+            // Get formatted IST date string
+            const dateStr = dateFormatter.format(now);
+            
+            const url = entryId ? 
+                `${API_URL}/entries/${entryId}` :
+                `${API_URL}/entries`;
+
+            const method = entryId ? 'PUT' : 'POST';
+            const body = entryId ? 
+                { content } :
+                { date: dateStr, content };
+
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Auth-Code': authToken
+                },
+                body: JSON.stringify(body)
+            });
+
+            return response;
+        }
+
 
         document.getElementById('entryForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const content = document.getElementById('entryText').value;
-            const authCode = document.getElementById('authCode').value;
+            const confirmAuthCode = document.getElementById('authCode').value;
             const entryId = document.getElementById('entryId').value;
             
             if (!content.trim()) {
@@ -641,8 +742,13 @@
                 return;
             }
 
-            if (!authCode.trim()) {
-                showMessage('error', 'Please enter the authentication code');
+            if (!confirmAuthCode.trim()) {
+                showMessage('error', 'Please confirm your authentication code');
+                return;
+            }
+
+            if (confirmAuthCode !== authToken) {
+                showMessage('error', 'Invalid authentication code');
                 return;
             }
 
@@ -651,32 +757,9 @@
             saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
             try {
-                const url = entryId ? 
-                    `${API_URL}/entries/${entryId}` :
-                    `${API_URL}/entries`;
-
-                const method = entryId ? 'PUT' : 'POST';
-                const body = entryId ? 
-                    { content } :
-                    {
-                        date: new Date().toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        }),
-                        content
-                    };
-
-                const response = await fetch(url, {
-                    method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Auth-Code': authCode
-                    },
-                    body: JSON.stringify(body)
-                });
-
+                const response = await saveEntry(entryId, content);
                 const data = await response.json();
+                
                 if (!response.ok) throw new Error(data.error || 'Operation failed');
 
                 showMessage('success', `Entry ${entryId ? 'updated' : 'added'} successfully`);
@@ -703,11 +786,6 @@
         window.onclick = (event) => {
             if (event.target === modal) closeModal();
         };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchEntries();
-            incrementVisitors();
-        });
     </script>
 </body>
 </html>
