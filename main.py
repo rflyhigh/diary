@@ -412,8 +412,8 @@ def delete_file(file_id):
         
         return jsonify({'message': 'File deleted successfully'})
         except Exception as e:
-        print(f"Error deleting file: {e}")
-        return jsonify({'error': 'Server error'}), 500
+            print(f"Error deleting file: {e}")
+            return jsonify({'error': 'Server error'}), 500
 
 @app.route('/visitors', methods=['GET'])
 @require_auth
