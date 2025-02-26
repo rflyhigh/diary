@@ -1,4 +1,109 @@
-<!DOCTYPE html>
+==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+127.0.0.1 - - [26/Feb/2025 14:23:38] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:39] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:42] "OPTIONS /entries/67820742eda4617f355c9756 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:42] "GET /entries/67820742eda4617f355c9756 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:45] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:45] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:47] "OPTIONS /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:48] "POST /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:48] "OPTIONS /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:48] "OPTIONS /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:49] "POST /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:49] "OPTIONS /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:50] "GET /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:50] "GET /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:51] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:23:52] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:15] "OPTIONS /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:15] "POST /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:16] "OPTIONS /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:16] "OPTIONS /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:16] "POST /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:17] "OPTIONS /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:17] "GET /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:18] "GET /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:18] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:19] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:21] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:44] "OPTIONS /tags HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:24:45] "GET /tags HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:12] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:13] "POST /entries HTTP/1.1" 201 -
+127.0.0.1 - - [26/Feb/2025 14:25:13] "OPTIONS /entries/67bf244907d18b5ff7b39559/images HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:20] "POST /entries/67bf244907d18b5ff7b39559/images HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:20] "OPTIONS /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:22] "GET /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:23] "GET /files/67bf244c07d18b5ff7b3955a HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:25:26] "GET /files/67bf244c07d18b5ff7b3955a HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:25:39] "GET /files/67bf244c07d18b5ff7b3955a HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:25:43] "OPTIONS /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:43] "POST /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:43] "OPTIONS /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:43] "OPTIONS /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:44] "POST /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:44] "OPTIONS /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:45] "GET /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:45] "GET /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:46] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:47] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:48] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:49] "OPTIONS /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:50] "GET /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:25:50] "GET /files/67bf244c07d18b5ff7b3955a HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:25:53] "GET /files/67bf244c07d18b5ff7b3955a HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:26:00] "OPTIONS /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:01] "GET /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:01] "OPTIONS /tags HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:01] "GET /files/67bf244c07d18b5ff7b3955a HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:26:02] "GET /tags HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:05] "GET /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:06] "GET /files/67bf244c07d18b5ff7b3955a HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:26:13] "OPTIONS /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:14] "DELETE /entries/67bf244907d18b5ff7b39559 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:14] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:15] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:17] "OPTIONS /entries/67bf23ac07d18b5ff7b39556 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:18] "GET /entries/67bf23ac07d18b5ff7b39556 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:21] "DELETE /entries/67bf23ac07d18b5ff7b39556 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:22] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:23] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:28] "OPTIONS /tags HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:28] "GET /tags HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:32] "OPTIONS /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:33] "PUT /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:33] "PUT /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:36] "PUT /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:38] "PUT /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:38] "OPTIONS /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:39] "PUT /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:40] "PUT /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:41] "GET /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:26:59] "OPTIONS /settings/background HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:02] "POST /settings/background HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:08] "OPTIONS /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:09] "PUT /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:10] "GET /files/67bf24b407d18b5ff7b39565 HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:27:14] "OPTIONS /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:15] "POST /auth HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:15] "OPTIONS /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:15] "OPTIONS /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:16] "POST /visitors/increment HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:16] "OPTIONS /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:17] "GET /stats HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:17] "GET /visitors HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:17] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:18] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:20] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:21] "OPTIONS /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:22] "GET /settings HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:22] "GET /files/67bf24b407d18b5ff7b39565 HTTP/1.1" 401 -
+127.0.0.1 - - [26/Feb/2025 14:27:29] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:30] "GET /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:31] "OPTIONS /entries/67880966eda4617f355c975b HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:32] "GET /entries/67880966eda4617f355c975b HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:38] "OPTIONS /entries HTTP/1.1" 200 -
+127.0.0.1 - - [26/Feb/2025 14:27:39] "GET /entries HTTP/1.1" 200 -<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -2429,66 +2534,122 @@
 
         // API Functions
         async function fetchWithAuth(url, options = {}) {
-            // Check if authentication is required
-            if (!authToken) {
-                return new Promise((resolve, reject) => {
-                    // Show auth modal
-                    openModal('authModal');
-                    
-                    // Set up event listener for auth modal submit
-                    const handleAuthModalSubmit = async () => {
-                        try {
-                            const authCode = document.getElementById('authModalInput').value;
-                            if (!authCode) {
-                                throw new Error('Authentication code is required');
-                            }
-                            
-                            const authResponse = await fetch(`${API_URL}/auth`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ authCode })
-                            });
-                            
-                            if (!authResponse.ok) {
-                                throw new Error('Authentication failed');
-                            }
-                            
-                            authToken = authCode;
-                            localStorage.setItem('diaryAuthToken', authToken);
-                            closeModal('authModal');
-                            
-                            // Now retry the original request
-                            const finalOptions = {
-                                ...options,
-                                headers: {
-                                    ...options.headers,
-                                    'X-Auth-Code': authToken
+            try {
+                // Check if authentication is required
+                if (!authToken) {
+                    return new Promise((resolve, reject) => {
+                        // Show auth modal
+                        openModal('authModal');
+                        
+                        // Set up event listener for auth modal submit
+                        const handleAuthModalSubmit = async () => {
+                            try {
+                                const authCode = document.getElementById('authModalInput').value;
+                                if (!authCode) {
+                                    throw new Error('Authentication code is required');
                                 }
-                            };
-                            
-                            const response = await fetch(`${API_URL}${url}`, finalOptions);
-                            resolve(response);
-                        } catch (error) {
-                            document.getElementById('authModalError').textContent = error.message;
-                            document.getElementById('authModalError').style.display = 'block';
-                            reject(error);
-                        }
-                    };
-                    
-                    document.getElementById('authModalSubmit').addEventListener('click', handleAuthModalSubmit, { once: true });
+                                
+                                const authResponse = await fetch(`${API_URL}/auth`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ authCode })
+                                });
+                                
+                                if (!authResponse.ok) {
+                                    throw new Error('Authentication failed');
+                                }
+                                
+                                authToken = authCode;
+                                localStorage.setItem('diaryAuthToken', authToken);
+                                closeModal('authModal');
+                                
+                                // Now retry the original request
+                                const finalOptions = {
+                                    ...options,
+                                    headers: {
+                                        ...options.headers,
+                                        'X-Auth-Code': authToken
+                                    }
+                                };
+                                
+                                const response = await fetch(`${API_URL}${url}`, finalOptions);
+                                resolve(response);
+                            } catch (error) {
+                                document.getElementById('authModalError').textContent = error.message;
+                                document.getElementById('authModalError').style.display = 'block';
+                                reject(error);
+                            }
+                        };
+                        
+                        document.getElementById('authModalSubmit').addEventListener('click', handleAuthModalSubmit, { once: true });
+                    });
+                }
+                
+                // Add auth header
+                const finalOptions = {
+                    ...options,
+                    headers: {
+                        ...options.headers,
+                        'X-Auth-Code': authToken
+                    }
+                };
+                
+                // Add timeout to fetch requests
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Request timed out')), 30000); // 30 second timeout
                 });
+                
+                // Race between the fetch and the timeout
+                const response = await Promise.race([
+                    fetch(`${API_URL}${url}`, finalOptions),
+                    timeoutPromise
+                ]);
+                
+                // Check for unauthorized response
+                if (response.status === 401) {
+                    // Clear auth token and ask for re-authentication
+                    authToken = '';
+                    localStorage.removeItem('diaryAuthToken');
+                    
+                    // Recursive call to retry with authentication
+                    return fetchWithAuth(url, options);
+                }
+                
+                return response;
+            } catch (error) {
+                console.error(`Fetch error for ${url}:`, error);
+                throw error;
+            }
+        }
+        
+        // Helper function to safely parse JSON
+        function safeJSON(data) {
+            try {
+                return JSON.parse(data);
+            } catch (e) {
+                console.error('JSON parsing error:', e);
+                return null;
+            }
+        }
+        
+        // Helper function to handle API errors
+        async function handleApiResponse(response, errorMessage = 'API request failed') {
+            if (!response.ok) {
+                // Try to get error details from response
+                let errorDetails = '';
+                try {
+                    const errorData = await response.json();
+                    errorDetails = errorData.error || errorData.message || '';
+                } catch (e) {
+                    // Ignore JSON parsing errors for error responses
+                }
+                
+                const error = new Error(`${errorMessage}${errorDetails ? ': ' + errorDetails : ''}`);
+                error.status = response.status;
+                throw error;
             }
             
-            // Add auth header
-            const finalOptions = {
-                ...options,
-                headers: {
-                    ...options.headers,
-                    'X-Auth-Code': authToken
-                }
-            };
-            
-            return fetch(`${API_URL}${url}`, finalOptions);
+            return response;
         }
 
         async function fetchEntries() {
@@ -2762,42 +2923,152 @@
         }
 
         // UI Functions
-        function loadPage(page, params = {}) {
-            currentPage = page;
-            pageTitle.textContent = getPageTitle(page);
+        function debugLog(message, data = null) {
+            if (localStorage.getItem('debugMode') === 'true') {
+                if (data) {
+                    console.log(`[DEBUG] ${message}:`, data);
+                } else {
+                    console.log(`[DEBUG] ${message}`);
+                }
+            }
+        }
+        
+        // Function to retry failed operations
+        async function retryOperation(operation, maxRetries = 3, delay = 1000) {
+            let lastError;
             
-            // Show/hide FAB button based on page
-            if (page === 'entries' || page === 'dashboard' || page === 'tags' || page === 'search') {
-                newEntryFab.classList.remove('hidden');
-            } else {
-                newEntryFab.classList.add('hidden');
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    return await operation();
+                } catch (error) {
+                    lastError = error;
+                    debugLog(`Operation failed (attempt ${attempt}/${maxRetries}):`, error);
+                    
+                    if (attempt < maxRetries) {
+                        // Wait before next retry
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        // Increase delay for next attempt (exponential backoff)
+                        delay *= 2;
+                    }
+                }
             }
             
-            // Load page content
-            switch (page) {
-                case 'dashboard':
+            throw lastError;
+        }
+        
+        // Function to validate entry data before saving
+        function validateEntryData(entry) {
+            const errors = [];
+            
+            if (!entry.date) errors.push('Date is required');
+            if (!entry.content || entry.content.trim() === '') errors.push('Content is required');
+            
+            // Validate tags (if present)
+            if (entry.tags && Array.isArray(entry.tags)) {
+                entry.tags = entry.tags.filter(tag => tag && typeof tag === 'string' && tag.trim() !== '');
+            } else {
+                entry.tags = [];
+            }
+            
+            return {
+                valid: errors.length === 0,
+                errors
+            };
+        }
+        
+        // Function to clean up memory leaks
+        function cleanupResources() {
+            // Clean up charts
+            if (window.entriesChart) {
+                window.entriesChart.destroy();
+                window.entriesChart = null;
+            }
+            
+            if (window.tagsChart) {
+                window.tagsChart.destroy();
+                window.tagsChart = null;
+            }
+            
+            if (window.moodChart) {
+                window.moodChart.destroy();
+                window.moodChart = null;
+            }
+            
+            // Clean up audio
+            if (window.currentAudio) {
+                window.currentAudio.pause();
+                window.currentAudio = null;
+            }
+            
+            // Clean up media recorder
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                try {
+                    mediaRecorder.stop();
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                } catch (e) {
+                    console.error('Error cleaning up media recorder:', e);
+                }
+            }
+            
+            // Clear any intervals or timeouts
+            if (window.recordingInterval) {
+                clearInterval(window.recordingInterval);
+                window.recordingInterval = null;
+            }
+        }
+        
+        // Window unload event to clean up resources
+        window.addEventListener('beforeunload', cleanupResources);
+        
+        // Improved error handling for page navigation
+        function loadPage(page, params = {}) {
+            try {
+                // Clean up resources from previous page
+                cleanupResources();
+                
+                currentPage = page;
+                pageTitle.textContent = getPageTitle(page);
+                
+                // Show/hide FAB button based on page
+                if (page === 'entries' || page === 'dashboard' || page === 'tags' || page === 'search') {
+                    newEntryFab.classList.remove('hidden');
+                } else {
+                    newEntryFab.classList.add('hidden');
+                }
+                
+                // Load page content
+                switch (page) {
+                    case 'dashboard':
+                        loadDashboard();
+                        break;
+                    case 'entries':
+                        loadEntries();
+                        break;
+                    case 'new-entry':
+                        loadNewEntry();
+                        break;
+                    case 'entry-detail':
+                        loadEntryDetail(params.id);
+                        break;
+                    case 'tags':
+                        loadTags();
+                        break;
+                    case 'search':
+                        loadSearch();
+                        break;
+                    case 'settings':
+                        loadSettings();
+                        break;
+                    default:
+                        loadDashboard();
+                }
+            } catch (error) {
+                console.error('Error loading page:', error);
+                showNotification('error', 'Error', `Failed to load ${page} page`);
+                // Fall back to dashboard on error
+                if (page !== 'dashboard') {
                     loadDashboard();
-                    break;
-                case 'entries':
-                    loadEntries();
-                    break;
-                case 'new-entry':
-                    loadNewEntry();
-                    break;
-                case 'entry-detail':
-                    loadEntryDetail(params.id);
-                    break;
-                case 'tags':
-                    loadTags();
-                    break;
-                case 'search':
-                    loadSearch();
-                    break;
-                case 'settings':
-                    loadSettings();
-                    break;
-                default:
-                    loadDashboard();
+                }
             }
         }
 
@@ -2815,251 +3086,298 @@
         }
 
         async function loadDashboard() {
-            showLoading();
-            appContent.innerHTML = `
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-book"></i></div>
-                        <div class="stat-value" id="totalEntries">-</div>
-                        <div class="stat-label">Total Entries</div>
-                                            </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-image"></i></div>
-                        <div class="stat-value" id="entriesWithImages">-</div>
-                        <div class="stat-label">Entries with Images</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-microphone"></i></div>
-                        <div class="stat-value" id="entriesWithVoice">-</div>
-                        <div class="stat-label">Entries with Voice Notes</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-font"></i></div>
-                        <div class="stat-value" id="totalWords">-</div>
-                        <div class="stat-label">Total Words</div>
-                    </div>
-                </div>
-                
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <div class="chart-title">Entries by Month</div>
-                    </div>
-                    <canvas id="entriesChart" height="300"></canvas>
-                </div>
-                
-                <div class="flex" style="gap: 1.5rem; flex-wrap: wrap;">
-                    <div class="chart-container" style="flex: 1; min-width: 300px;">
-                        <div class="chart-header">
-                            <div class="chart-title">Top Tags</div>
-                        </div>
-                        <canvas id="tagsChart" height="250"></canvas>
-                    </div>
-                    <div class="chart-container" style="flex: 1; min-width: 300px;">
-                        <div class="chart-header">
-                            <div class="chart-title">Mood Distribution</div>
-                        </div>
-                        <canvas id="moodChart" height="250"></canvas>
-                    </div>
-                </div>
-                
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <div class="chart-title">Recent Entries</div>
-                    </div>
-                    <div id="recentEntries" class="entries-list">
-                        <div class="text-center mt-4 mb-4 text-muted">Loading recent entries...</div>
-                    </div>
-                </div>
-            `;
-            
-            try {
-                // Fetch statistics
-                const stats = await fetchStats();
-                if (stats) {
-                    document.getElementById('totalEntries').textContent = stats.total_entries;
-                    document.getElementById('entriesWithImages').textContent = stats.entries_with_images;
-                    document.getElementById('entriesWithVoice').textContent = stats.entries_with_voice;
-                    document.getElementById('totalWords').textContent = stats.total_words.toLocaleString();
-                    
-                    // Create entries by month chart
-                    if (stats.entries_by_month && stats.entries_by_month.length) {
-                        const monthsData = stats.entries_by_month.map(item => ({
-                            month: item._id,
-                            count: item.count
-                        }));
-                        
-                        createMonthlyChart(monthsData);
+          showLoading();
+          appContent.innerHTML = `
+              <div class="stats-grid">
+                  <div class="stat-card">
+                      <div class="stat-icon"><i class="fas fa-book"></i></div>
+                      <div class="stat-value" id="totalEntries">-</div>
+                      <div class="stat-label">Total Entries</div>
+                  </div>
+                  <div class="stat-card">
+                      <div class="stat-icon"><i class="fas fa-image"></i></div>
+                      <div class="stat-value" id="entriesWithImages">-</div>
+                      <div class="stat-label">Entries with Images</div>
+                  </div>
+                  <div class="stat-card">
+                      <div class="stat-icon"><i class="fas fa-microphone"></i></div>
+                      <div class="stat-value" id="entriesWithVoice">-</div>
+                      <div class="stat-label">Entries with Voice Notes</div>
+                  </div>
+                  <div class="stat-card">
+                      <div class="stat-icon"><i class="fas fa-font"></i></div>
+                      <div class="stat-value" id="totalWords">-</div>
+                      <div class="stat-label">Total Words</div>
+                  </div>
+              </div>
+              
+              <div class="chart-container">
+                  <div class="chart-header">
+                      <div class="chart-title">Entries by Month</div>
+                  </div>
+                  <canvas id="entriesChart" height="300"></canvas>
+              </div>
+              
+              <div class="flex" style="gap: 1.5rem; flex-wrap: wrap;">
+                  <div class="chart-container" style="flex: 1; min-width: 300px;">
+                      <div class="chart-header">
+                          <div class="chart-title">Top Tags</div>
+                      </div>
+                      <canvas id="tagsChart" height="250"></canvas>
+                  </div>
+                  <div class="chart-container" style="flex: 1; min-width: 300px;">
+                      <div class="chart-header">
+                          <div class="chart-title">Mood Distribution</div>
+                      </div>
+                      <canvas id="moodChart" height="250"></canvas>
+                  </div>
+              </div>
+              
+              <div class="chart-container">
+                  <div class="chart-header">
+                      <div class="chart-title">Recent Entries</div>
+                  </div>
+                  <div id="recentEntries" class="entries-list">
+                      <div class="text-center mt-4 mb-4 text-muted">Loading recent entries...</div>
+                  </div>
+              </div>
+          `;
+          
+          try {
+              // Fetch statistics
+              const stats = await fetchStats();
+              if (stats) {
+                  document.getElementById('totalEntries').textContent = stats.total_entries || 0;
+                  document.getElementById('entriesWithImages').textContent = stats.entries_with_images || 0;
+                  document.getElementById('entriesWithVoice').textContent = stats.entries_with_voice || 0;
+                  document.getElementById('totalWords').textContent = (stats.total_words || 0).toLocaleString();
+                  
+                  // Create entries by month chart
+                  if (stats.entries_by_month && stats.entries_by_month.length) {
+                      const monthsData = stats.entries_by_month.map(item => ({
+                          month: item._id || '',
+                          count: item.count || 0
+                      }));
+                      
+                      createMonthlyChart(monthsData);
+                  } else {
+                      // Display empty chart message
+                      document.getElementById('entriesChart').parentNode.innerHTML = 
+                          '<div class="text-center mt-4 mb-4 text-muted">No monthly data available</div>';
+                  }
+                  
+                  // Create tags chart
+                  if (stats.top_tags && stats.top_tags.length) {
+                      const tagsData = stats.top_tags.map(item => ({
+                          tag: item._id || 'Uncategorized',
+                          count: item.count || 0
+                      }));
+                      
+                      createTagsChart(tagsData);
+                  } else {
+                      // Display empty chart message
+                      document.getElementById('tagsChart').parentNode.innerHTML = 
+                          '<div class="text-center mt-4 mb-4 text-muted">No tag data available</div>';
+                  }
+                  
+                  // Create mood chart
+                  if (stats.mood_distribution && stats.mood_distribution.length) {
+                      const moodData = stats.mood_distribution.map(item => ({
+                          mood: item._id || 'Unspecified',
+                          count: item.count || 0
+                      }));
+                      
+                      createMoodChart(moodData);
+                  } else {
+                      // Display empty chart message
+                      document.getElementById('moodChart').parentNode.innerHTML = 
+                          '<div class="text-center mt-4 mb-4 text-muted">No mood data available</div>';
+                  }
+              }
+              
+              // Fetch recent entries
+              const entries = await fetchEntries();
+              const recentEntries = entries.slice(0, 5);
+              
+              const recentEntriesContainer = document.getElementById('recentEntries');
+              if (recentEntriesContainer) {
+                  recentEntriesContainer.innerHTML = '';
+                  
+                  if (recentEntries.length === 0) {
+                      recentEntriesContainer.innerHTML = `
+                          <div class="text-center mt-4 mb-4 text-muted">
+                              No entries yet. <a href="#" onclick="loadPage('new-entry')">Create your first entry</a>.
+                          </div>
+                      `;
+                  } else {
+                      recentEntries.forEach(entry => {
+                          recentEntriesContainer.appendChild(createEntryElement(entry, 'list'));
+                      });
+                  }
+              }
+          } catch (error) {
+              console.error('Error loading dashboard:', error);
+              showNotification('error', 'Error', 'Failed to load dashboard data');
+              appContent.innerHTML = `
+                  <div class="text-center mt-4 mb-4 text-muted">
+                      Error loading dashboard. Please try again later.
+                  </div>
+              `;
+          } finally {
+              hideLoading();
+          }
+      }
+        
+      function createMonthlyChart(data) {
+        const chartElement = document.getElementById('entriesChart');
+        if (!chartElement) return;
+        
+        const ctx = chartElement.getContext('2d');
+        if (!ctx) return;
+        
+        // Sort data by month
+        data.sort((a, b) => a.month.localeCompare(b.month));
+        
+        // Format month labels (from YYYY-MM to Month YYYY)
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const labels = data.map(item => {
+            if (!item.month || item.month.indexOf('-') === -1) return 'Unknown';
+            const [year, month] = item.month.split('-');
+            return `${months[parseInt(month) - 1] || 'Unknown'} ${year}`;
+        });
+        
+        const values = data.map(item => item.count);
+        
+        // Destroy previous chart if it exists
+        if (window.entriesChart) {
+            window.entriesChart.destroy();
+        }
+        
+        window.entriesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Number of Entries',
+                    data: values,
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-color'),
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
                     }
-                    
-                    // Create tags chart
-                    if (stats.top_tags && stats.top_tags.length) {
-                        const tagsData = stats.top_tags.map(item => ({
-                            tag: item._id,
-                            count: item.count
-                        }));
-                        
-                        createTagsChart(tagsData);
-                    }
-                    
-                    // Create mood chart
-                    if (stats.mood_distribution && stats.mood_distribution.length) {
-                        const moodData = stats.mood_distribution.map(item => ({
-                            mood: item._id,
-                            count: item.count
-                        }));
-                        
-                        createMoodChart(moodData);
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
                     }
                 }
-                
-                // Fetch recent entries
-                const entries = await fetchEntries();
-                const recentEntries = entries.slice(0, 5);
-                
-                const recentEntriesContainer = document.getElementById('recentEntries');
-                recentEntriesContainer.innerHTML = '';
-                
-                if (recentEntries.length === 0) {
-                    recentEntriesContainer.innerHTML = `
-                        <div class="text-center mt-4 mb-4 text-muted">
-                            No entries yet. <a href="#" onclick="loadPage('new-entry')">Create your first entry</a>.
-                        </div>
-                    `;
-                } else {
-                    recentEntries.forEach(entry => {
-                        recentEntriesContainer.appendChild(createEntryElement(entry, 'list'));
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-                showNotification('error', 'Error', 'Failed to load dashboard data');
-            } finally {
-                hideLoading();
             }
+        });
+    }
+    
+    function createTagsChart(data) {
+        const chartElement = document.getElementById('tagsChart');
+        if (!chartElement) return;
+        
+        const ctx = chartElement.getContext('2d');
+        if (!ctx) return;
+        
+        // Sort data by count (descending)
+        data.sort((a, b) => b.count - a.count);
+        
+        const labels = data.map(item => item.tag);
+        const values = data.map(item => item.count);
+        
+        // Destroy previous chart if it exists
+        if (window.tagsChart) {
+            window.tagsChart.destroy();
         }
         
-        function createMonthlyChart(data) {
-            const ctx = document.getElementById('entriesChart').getContext('2d');
-            
-            // Sort data by month
-            data.sort((a, b) => a.month.localeCompare(b.month));
-            
-            // Format month labels (from YYYY-MM to Month YYYY)
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const labels = data.map(item => {
-                const [year, month] = item.month.split('-');
-                return `${months[parseInt(month) - 1]} ${year}`;
-            });
-            
-            const values = data.map(item => item.count);
-            
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Number of Entries',
-                        data: values,
-                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-color'),
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        }
+        window.tagsChart = new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: [
+                        '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
                     }
                 }
-            });
+            }
+        });
+    }
+    
+    function createMoodChart(data) {
+        const chartElement = document.getElementById('moodChart');
+        if (!chartElement) return;
+        
+        const ctx = chartElement.getContext('2d');
+        if (!ctx) return;
+        
+        // Sort data by count (descending)
+        data.sort((a, b) => b.count - a.count);
+        
+        const labels = data.map(item => item.mood);
+        const values = data.map(item => item.count);
+        
+        // Create a color map for moods
+        const moodColors = {
+            'Happy': '#10b981',
+            'Sad': '#6b7280',
+            'Excited': '#f59e0b',
+            'Calm': '#60a5fa',
+            'Anxious': '#ef4444',
+            'Grateful': '#8b5cf6',
+            'Frustrated': '#f43f5e',
+            'Inspired': '#6366f1'
+        };
+        
+        // Get colors for each mood, or use default color if mood not in map
+        const colors = labels.map(mood => moodColors[mood] || '#6b7280');
+        
+        // Destroy previous chart if it exists
+        if (window.moodChart) {
+            window.moodChart.destroy();
         }
         
-        function createTagsChart(data) {
-            const ctx = document.getElementById('tagsChart').getContext('2d');
-            
-            // Sort data by count (descending)
-            data.sort((a, b) => b.count - a.count);
-            
-            const labels = data.map(item => item.tag);
-            const values = data.map(item => item.count);
-            
-            new Chart(ctx, {
-                type: 'polarArea',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: [
-                            '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right'
-                        }
+        window.moodChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
                     }
                 }
-            });
-        }
-        
-        function createMoodChart(data) {
-            const ctx = document.getElementById('moodChart').getContext('2d');
-            
-            // Sort data by count (descending)
-            data.sort((a, b) => b.count - a.count);
-            
-            const labels = data.map(item => item.mood);
-            const values = data.map(item => item.count);
-            
-            // Create a color map for moods
-            const moodColors = {
-                'Happy': '#10b981',
-                'Sad': '#6b7280',
-                'Excited': '#f59e0b',
-                'Calm': '#60a5fa',
-                'Anxious': '#ef4444',
-                'Grateful': '#8b5cf6',
-                'Frustrated': '#f43f5e',
-                'Inspired': '#6366f1'
-            };
-            
-            // Get colors for each mood, or use default color if mood not in map
-            const colors = labels.map(mood => moodColors[mood] || '#6b7280');
-            
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: colors
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right'
-                        }
-                    }
-                }
-            });
-        }
+            }
+        });
+    }
 
         async function loadEntries() {
             showLoading();
@@ -3320,7 +3638,10 @@
                             <div class="entry-images">
                                 ${entry.images.map((image, index) => `
                                     <div class="entry-image">
-                                        <img src="${API_URL}/files/${image.id}" alt="Entry image" onclick="viewImage('${image.id}', ${index})">
+                                        <img src="${API_URL}/files/${image.id}" 
+                                             alt="Entry image" 
+                                             onclick="viewImage('${image.id}', ${index})"
+                                             onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200?text=Image+Error'; this.parentNode.classList.add('image-error');">
                                         <div class="entry-image-actions">
                                             <button class="entry-image-action" onclick="event.stopPropagation(); downloadFile('${image.id}', '${image.filename}')">
                                                 <i class="fas fa-download"></i>
@@ -3924,12 +4245,19 @@
             const recordingStatus = document.getElementById('recordingStatus');
             const voicePreview = document.getElementById('voicePreview');
             
+            if (!recordButton || !recordingTimer || !recordingStatus || !voicePreview) {
+                console.error('Voice recorder elements not found');
+                return;
+            }
+            
             // Check if browser supports audio recording
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                 recordingStatus.textContent = 'Audio recording not supported in this browser';
                 recordButton.disabled = true;
                 return;
             }
+            
+            let recordingInterval = null;
             
             recordButton.addEventListener('click', toggleRecording);
             
@@ -3945,6 +4273,7 @@
                     } catch (error) {
                         console.error('Error accessing microphone:', error);
                         recordingStatus.textContent = 'Error accessing microphone. Please check permissions.';
+                        showNotification('error', 'Error', 'Could not access microphone');
                     }
                 }
             }
@@ -3965,7 +4294,7 @@
                     
                     // Create audio element for preview
                     const audioURL = URL.createObjectURL(audioBlob);
-                                        const audio = new Audio(audioURL);
+                    const audio = new Audio(audioURL);
                     
                     // Create preview item
                     const previewItem = document.createElement('div');
@@ -4022,7 +4351,10 @@
                 recordingTimer.textContent = '00:00';
                 recordingTimer.style.display = 'block';
                 
-                recordingTimer = setInterval(() => {
+                // Clear any existing interval
+                if (recordingInterval) clearInterval(recordingInterval);
+                
+                recordingInterval = setInterval(() => {
                     recordingDuration++;
                     const minutes = Math.floor(recordingDuration / 60);
                     const seconds = recordingDuration % 60;
@@ -4039,7 +4371,12 @@
                 if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                     mediaRecorder.stop();
                     isRecording = false;
-                    clearInterval(recordingTimer);
+                    
+                    // Clear timer interval
+                    if (recordingInterval) {
+                        clearInterval(recordingInterval);
+                        recordingInterval = null;
+                    }
                 }
             }
         }
@@ -4902,21 +5239,37 @@
             loadingOverlay.classList.remove('active');
         }
 
-        function showNotification(type, title, message) {
+        function showNotification(type, title, message, duration = 5000) {
+            // Prevent XSS by sanitizing inputs
+            const sanitize = (str) => {
+                const temp = document.createElement('div');
+                temp.textContent = str;
+                return temp.innerHTML;
+            };
+            
             const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
+            notification.className = `notification notification-${sanitize(type)}`;
             notification.innerHTML = `
                 <div class="notification-icon">
                     <i class="fas ${getNotificationIcon(type)}"></i>
                 </div>
                 <div class="notification-content">
-                    <div class="notification-title">${title}</div>
-                    <div class="notification-message">${message}</div>
+                    <div class="notification-title">${sanitize(title)}</div>
+                    <div class="notification-message">${sanitize(message)}</div>
                 </div>
                 <button class="notification-close">
                     <i class="fas fa-times"></i>
                 </button>
             `;
+            
+            // Get or create notification container
+            let notificationContainer = document.getElementById('notificationContainer');
+            if (!notificationContainer) {
+                notificationContainer = document.createElement('div');
+                notificationContainer.id = 'notificationContainer';
+                notificationContainer.className = 'notification-container';
+                document.body.appendChild(notificationContainer);
+            }
             
             notificationContainer.appendChild(notification);
             
@@ -4925,10 +5278,14 @@
                 closeNotification(notification);
             });
             
-            // Automatically close after 5 seconds
+            // Automatically close after duration
             setTimeout(() => {
-                closeNotification(notification);
-            }, 5000);
+                if (notification.parentNode) {
+                    closeNotification(notification);
+                }
+            }, duration);
+            
+            return notification;
         }
 
         function closeNotification(notification) {
@@ -4968,6 +5325,10 @@
                 errorElements.forEach(el => el.style.display = 'none');
             }, 300);
         }
+        
+      function elementExists(id) {
+          return document.getElementById(id) !== null;
+        }
 
         // Image Viewer Functions
         function viewImage(imageId, index) {
@@ -4975,10 +5336,50 @@
             const viewer = document.getElementById('imageViewer');
             const viewerImage = document.getElementById('viewerImage');
             
-            viewerImage.src = `${API_URL}/files/${imageId}`;
+            // Show loading state
+            viewerImage.src = '';
+            viewerImage.style.display = 'none';
+            const loadingSpinner = document.createElement('div');
+            loadingSpinner.className = 'spinner';
+            loadingSpinner.id = 'imageViewerSpinner';
+            viewer.querySelector('.image-viewer-content').appendChild(loadingSpinner);
+            
+            // Show the viewer
             viewer.style.display = 'flex';
             setTimeout(() => viewer.classList.add('active'), 10);
+            
+            // Fetch the image with auth headers
+            fetch(`${API_URL}/files/${imageId}`, {
+                headers: {
+                    'X-Auth-Code': authToken
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load image');
+                return response.blob();
+            })
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                viewerImage.onload = () => {
+                    // Remove spinner and show image
+                    const spinner = document.getElementById('imageViewerSpinner');
+                    if (spinner) spinner.remove();
+                    viewerImage.style.display = 'block';
+                };
+                viewerImage.src = url;
+            })
+            .catch(error => {
+                console.error('Error loading image:', error);
+                // Remove spinner and show error message
+                const spinner = document.getElementById('imageViewerSpinner');
+                if (spinner) spinner.remove();
+                
+                viewerImage.src = 'https://via.placeholder.com/400x300?text=Image+Loading+Error';
+                viewerImage.style.display = 'block';
+                showNotification('error', 'Error', 'Failed to load image');
+            });
         }
+
 
         function closeImageViewer() {
             const viewer = document.getElementById('imageViewer');
@@ -5013,50 +5414,107 @@
         }
 
         function playVoiceNote(voiceId, button) {
-            // Create an audio element
-            const audio = new Audio(`${API_URL}/files/${voiceId}`);
+          // Stop any currently playing audio
+          const currentAudio = window.currentAudio;
+          if (currentAudio) {
+              currentAudio.pause();
+              // Reset any playing buttons
+              document.querySelectorAll('.voice-note-play').forEach(btn => {
+                  btn.innerHTML = '<i class="fas fa-play"></i>';
+              });
+          }
+          
+          try {
+              // Create an audio element with auth headers
+              const audio = new Audio();
+              
+              // Add auth headers to the request
+              fetch(`${API_URL}/files/${voiceId}`, {
+                  headers: {
+                      'X-Auth-Code': authToken
+                  }
+              })
+              .then(response => {
+                  if (!response.ok) throw new Error('Failed to load audio');
+                  return response.blob();
+              })
+              .then(blob => {
+                  const url = URL.createObjectURL(blob);
+                  audio.src = url;
+                  
+                  // Change button icon to pause
+                  button.innerHTML = '<i class="fas fa-pause"></i>';
+                  
+                  // Play the audio
+                  audio.play().catch(err => {
+                      console.error('Error playing audio:', err);
+                      button.innerHTML = '<i class="fas fa-play"></i>';
+                      showNotification('error', 'Error', 'Failed to play voice note');
+                  });
+                  
+                  // Store the current audio globally
+                  window.currentAudio = audio;
+                  
+                  // Add ended event listener
+                  audio.addEventListener('ended', () => {
+                      button.innerHTML = '<i class="fas fa-play"></i>';
+                      window.currentAudio = null;
+                  });
+                  
+                  // Add click event to pause/resume
+                  button.onclick = (e) => {
+                      e.stopPropagation();
+                      if (audio.paused) {
+                          audio.play();
+                          button.innerHTML = '<i class="fas fa-pause"></i>';
+                      } else {
+                          audio.pause();
+                          button.innerHTML = '<i class="fas fa-play"></i>';
+                      }
+                  };
+              })
+              .catch(error => {
+                  console.error('Error loading voice note:', error);
+                  showNotification('error', 'Error', 'Failed to load voice note');
+                  button.innerHTML = '<i class="fas fa-play"></i>';
+              });
+          } catch (error) {
+              console.error('Error playing voice note:', error);
+              showNotification('error', 'Error', 'Failed to play voice note');
+              button.innerHTML = '<i class="fas fa-play"></i>';
+          }
+      }
+
+      function downloadFile(fileId, filename) {
+            showLoading();
             
-            // Change button icon to pause
-            button.innerHTML = '<i class="fas fa-pause"></i>';
-            
-            // Play the audio
-            audio.play();
-            
-            // Add ended event listener
-            audio.addEventListener('ended', () => {
-                button.innerHTML = '<i class="fas fa-play"></i>';
-            });
-            
-            // Add click event to pause/resume
-            button.onclick = () => {
-                if (audio.paused) {
-                    audio.play();
-                    button.innerHTML = '<i class="fas fa-pause"></i>';
-                } else {
-                    audio.pause();
-                    button.innerHTML = '<i class="fas fa-play"></i>';
+            fetch(`${API_URL}/files/${fileId}`, {
+                headers: {
+                    'X-Auth-Code': authToken
                 }
-            };
-        }
-
-        function downloadFile(fileId, filename) {
-            const a = document.createElement('a');
-            a.href = `${API_URL}/files/${fileId}`;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function deleteFileWithConfirm(fileId) {
-            if (confirm('Are you sure you want to delete this file?')) {
-                deleteFile(fileId).then(() => {
-                    // Reload the current entry to reflect changes
-                    if (currentPage === 'entry-detail' && currentEntryId) {
-                        loadEntryDetail(currentEntryId);
-                    }
-                });
-            }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to download file');
+                return response.blob();
+            })
+            .then(blob => {
+                hideLoading();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename || 'download';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error downloading file:', error);
+                showNotification('error', 'Error', 'Failed to download file');
+            });
         }
 
         // Tag element creation helper
@@ -5113,5 +5571,3 @@
     </script>
 </body>
 </html>
-
-            
