@@ -266,66 +266,7 @@
             padding: 2rem;
         }
 
-        /* Dashboard */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            background: rgba(var(--accent-color-rgb), 0.1);
-            color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #888;
-            font-size: 0.875rem;
-        }
-
-        .chart-container {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            margin-bottom: 2rem;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .chart-title {
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
+        
 
         /* Diary Entries */
         .entries-header {
@@ -2068,9 +2009,6 @@
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">Main</div>
                     <ul class="sidebar-menu">
-                        <li class="sidebar-menu-item active" data-page="dashboard">
-                            <i class="fas fa-home"></i> Dashboard
-                        </li>
                         <li class="sidebar-menu-item" data-page="entries">
                             <i class="fas fa-book"></i> All Entries
                         </li>
@@ -2117,7 +2055,7 @@
                     <button id="menuToggle" class="menu-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                    <h1 class="page-title" id="pageTitle">All entries</h1>
                 </div>
                 <div class="header-actions">
                     <div class="search-bar">
@@ -2213,7 +2151,7 @@
         // Configuration
         const API_URL = 'https://diary-3byr.onrender.com'; // Update with your actual API URL
         let authToken = localStorage.getItem('diaryAuthToken') || '';
-        let currentPage = 'dashboard';
+        let currentPage = 'entries';
         let currentEntryId = null;
         let allEntries = [];
         let allTags = [];
@@ -2873,21 +2811,6 @@
         
         // Function to clean up memory leaks
         function cleanupResources() {
-            // Clean up charts
-            if (window.entriesChart && typeof window.entriesChart.destroy === 'function') {
-                window.entriesChart.destroy();
-                window.entriesChart = null;
-            }
-            
-            if (window.tagsChart && typeof window.tagsChart.destroy === 'function') {
-                window.tagsChart.destroy();
-                window.tagsChart = null;
-            }
-            
-            if (window.moodChart && typeof window.moodChart.destroy === 'function') {
-                window.moodChart.destroy();
-                window.moodChart = null;
-            }
                     
             // Clean up audio
             if (window.currentAudio) {
@@ -2925,7 +2848,7 @@
                 pageTitle.textContent = getPageTitle(page);
                 
                 // Show/hide FAB button based on page
-                if (page === 'entries' || page === 'dashboard' || page === 'tags' || page === 'search') {
+                if (page === 'entries' || page === 'tags' || page === 'search') {
                     newEntryFab.classList.remove('hidden');
                 } else {
                     newEntryFab.classList.add('hidden');
@@ -2933,12 +2856,6 @@
                 
                 // Load page content
                 switch (page) {
-                    case 'dashboard':
-                        loadDashboard();
-                        break;
-                    case 'entries':
-                        loadEntries();
-                        break;
                     case 'new-entry':
                         loadNewEntry();
                         break;
@@ -2955,324 +2872,31 @@
                         loadSettings();
                         break;
                     default:
-                        loadDashboard();
+                        loadEntries();
                 }
             } catch (error) {
                 console.error('Error loading page:', error);
                 showNotification('error', 'Error', `Failed to load ${page} page`);
-                // Fall back to dashboard on error
-                if (page !== 'dashboard') {
-                    loadDashboard();
+                if (page !== 'entries') {
+                    loadEntries()
                 }
             }
         }
 
         function getPageTitle(page) {
             switch (page) {
-                case 'dashboard': return 'Dashboard';
                 case 'entries': return 'All Entries';
                 case 'new-entry': return 'New Entry';
                 case 'entry-detail': return 'Entry Details';
                 case 'tags': return 'Tags';
                 case 'search': return 'Search';
                 case 'settings': return 'Settings';
-                default: return 'Dashboard';
+                default: return 'Entries';
             }
         }
 
-        async function loadDashboard() {
-          showLoading();
-          appContent.innerHTML = `
-              <div class="stats-grid">
-                  <div class="stat-card">
-                      <div class="stat-icon"><i class="fas fa-book"></i></div>
-                      <div class="stat-value" id="totalEntries">-</div>
-                      <div class="stat-label">Total Entries</div>
-                  </div>
-                  <div class="stat-card">
-                      <div class="stat-icon"><i class="fas fa-image"></i></div>
-                      <div class="stat-value" id="entriesWithImages">-</div>
-                      <div class="stat-label">Entries with Images</div>
-                  </div>
-                  <div class="stat-card">
-                      <div class="stat-icon"><i class="fas fa-microphone"></i></div>
-                      <div class="stat-value" id="entriesWithVoice">-</div>
-                      <div class="stat-label">Entries with Voice Notes</div>
-                  </div>
-                  <div class="stat-card">
-                      <div class="stat-icon"><i class="fas fa-font"></i></div>
-                      <div class="stat-value" id="totalWords">-</div>
-                      <div class="stat-label">Total Words</div>
-                  </div>
-              </div>
-              
-              <div class="chart-container">
-                  <div class="chart-header">
-                      <div class="chart-title">Entries by Month</div>
-                  </div>
-                  <canvas id="entriesChart" height="300"></canvas>
-              </div>
-              
-              <div class="flex" style="gap: 1.5rem; flex-wrap: wrap;">
-                  <div class="chart-container" style="flex: 1; min-width: 300px;">
-                      <div class="chart-header">
-                          <div class="chart-title">Top Tags</div>
-                      </div>
-                      <canvas id="tagsChart" height="250"></canvas>
-                  </div>
-                  <div class="chart-container" style="flex: 1; min-width: 300px;">
-                      <div class="chart-header">
-                          <div class="chart-title">Mood Distribution</div>
-                      </div>
-                      <canvas id="moodChart" height="250"></canvas>
-                  </div>
-              </div>
-              
-              <div class="chart-container">
-                  <div class="chart-header">
-                      <div class="chart-title">Recent Entries</div>
-                  </div>
-                  <div id="recentEntries" class="entries-list">
-                      <div class="text-center mt-4 mb-4 text-muted">Loading recent entries...</div>
-                  </div>
-              </div>
-          `;
-          
-          try {
-              // Fetch statistics
-              const stats = await fetchStats();
-              if (stats) {
-                  document.getElementById('totalEntries').textContent = stats.total_entries || 0;
-                  document.getElementById('entriesWithImages').textContent = stats.entries_with_images || 0;
-                  document.getElementById('entriesWithVoice').textContent = stats.entries_with_voice || 0;
-                  document.getElementById('totalWords').textContent = (stats.total_words || 0).toLocaleString();
-                  
-                  // Create entries by month chart
-                  if (stats.entries_by_month && stats.entries_by_month.length) {
-                      const monthsData = stats.entries_by_month.map(item => ({
-                          month: item._id || '',
-                          count: item.count || 0
-                      }));
-                      
-                      createMonthlyChart(monthsData);
-                  } else {
-                      // Display empty chart message
-                      document.getElementById('entriesChart').parentNode.innerHTML = 
-                          '<div class="text-center mt-4 mb-4 text-muted">No monthly data available</div>';
-                  }
-                  
-                  // Create tags chart
-                  if (stats.top_tags && stats.top_tags.length) {
-                      const tagsData = stats.top_tags.map(item => ({
-                          tag: item._id || 'Uncategorized',
-                          count: item.count || 0
-                      }));
-                      
-                      createTagsChart(tagsData);
-                  } else {
-                      // Display empty chart message
-                      document.getElementById('tagsChart').parentNode.innerHTML = 
-                          '<div class="text-center mt-4 mb-4 text-muted">No tag data available</div>';
-                  }
-                  
-                  // Create mood chart
-                  if (stats.mood_distribution && stats.mood_distribution.length) {
-                      const moodData = stats.mood_distribution.map(item => ({
-                          mood: item._id || 'Unspecified',
-                          count: item.count || 0
-                      }));
-                      
-                      createMoodChart(moodData);
-                  } else {
-                      // Display empty chart message
-                      document.getElementById('moodChart').parentNode.innerHTML = 
-                          '<div class="text-center mt-4 mb-4 text-muted">No mood data available</div>';
-                  }
-              }
-              
-              // Fetch recent entries
-              const entries = await fetchEntries();
-              const recentEntries = entries.slice(0, 5);
-              
-              const recentEntriesContainer = document.getElementById('recentEntries');
-              if (recentEntriesContainer) {
-                  recentEntriesContainer.innerHTML = '';
-                  
-                  if (recentEntries.length === 0) {
-                      recentEntriesContainer.innerHTML = `
-                          <div class="text-center mt-4 mb-4 text-muted">
-                              No entries yet. <a href="#" onclick="loadPage('new-entry')">Create your first entry</a>.
-                          </div>
-                      `;
-                  } else {
-                      recentEntries.forEach(entry => {
-                          recentEntriesContainer.appendChild(createEntryElement(entry, 'list'));
-                      });
-                  }
-              }
-          } catch (error) {
-              console.error('Error loading dashboard:', error);
-              showNotification('error', 'Error', 'Failed to load dashboard data');
-              appContent.innerHTML = `
-                  <div class="text-center mt-4 mb-4 text-muted">
-                      Error loading dashboard. Please try again later.
-                  </div>
-              `;
-          } finally {
-              hideLoading();
-          }
-      }
         
-      function createMonthlyChart(data) {
-          const chartElement = document.getElementById('entriesChart');
-          if (!chartElement) return;
-          
-          const ctx = chartElement.getContext('2d');
-          if (!ctx) return;
-          
-          // Sort data by month
-          data.sort((a, b) => a.month.localeCompare(b.month));
-          
-          // Format month labels (from YYYY-MM to Month YYYY)
-          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          const labels = data.map(item => {
-              if (!item.month || item.month.indexOf('-') === -1) return 'Unknown';
-              const [year, month] = item.month.split('-');
-              return `${months[parseInt(month) - 1] || 'Unknown'} ${year}`;
-          });
-          
-          const values = data.map(item => item.count);
-          
-          // Destroy previous chart if it exists
-          if (window.entriesChart && typeof window.entriesChart.destroy === 'function') {
-              window.entriesChart.destroy();
-          }
-          
-          window.entriesChart = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                  labels: labels,
-                  datasets: [{
-                      label: 'Number of Entries',
-                      data: values,
-                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-color'),
-                      borderRadius: 5
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                      legend: {
-                          display: false
-                      }
-                  },
-                  scales: {
-                      y: {
-                          beginAtZero: true,
-                          ticks: {
-                              precision: 0
-                          }
-                      }
-                  }
-              }
-          });
-      }
-    
-    function createTagsChart(data) {
-        const chartElement = document.getElementById('tagsChart');
-        if (!chartElement) return;
         
-        const ctx = chartElement.getContext('2d');
-        if (!ctx) return;
-        
-        // Sort data by count (descending)
-        data.sort((a, b) => b.count - a.count);
-        
-        const labels = data.map(item => item.tag);
-        const values = data.map(item => item.count);
-        
-        // Destroy previous chart if it exists
-        if (window.tagsChart) {
-            window.tagsChart.destroy();
-        }
-        
-        window.tagsChart = new Chart(ctx, {
-            type: 'polarArea',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: [
-                        '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'right'
-                    }
-                }
-            }
-        });
-    }
-    
-    function createMoodChart(data) {
-        const chartElement = document.getElementById('moodChart');
-        if (!chartElement) return;
-        
-        const ctx = chartElement.getContext('2d');
-        if (!ctx) return;
-        
-        // Sort data by count (descending)
-        data.sort((a, b) => b.count - a.count);
-        
-        const labels = data.map(item => item.mood);
-        const values = data.map(item => item.count);
-        
-        // Create a color map for moods
-        const moodColors = {
-            'Happy': '#10b981',
-            'Sad': '#6b7280',
-            'Excited': '#f59e0b',
-            'Calm': '#60a5fa',
-            'Anxious': '#ef4444',
-            'Grateful': '#8b5cf6',
-            'Frustrated': '#f43f5e',
-            'Inspired': '#6366f1'
-        };
-        
-        // Get colors for each mood, or use default color if mood not in map
-        const colors = labels.map(mood => moodColors[mood] || '#6b7280');
-        
-        // Destroy previous chart if it exists
-        if (window.moodChart) {
-            window.moodChart.destroy();
-        }
-        
-        window.moodChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: colors
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'right'
-                    }
-                }
-            }
-        });
-    }
 
         async function loadEntries() {
             showLoading();
@@ -5466,3 +5090,5 @@
     </script>
 </body>
 </html>
+
+
