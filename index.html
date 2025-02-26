@@ -2874,21 +2874,21 @@
         // Function to clean up memory leaks
         function cleanupResources() {
             // Clean up charts
-            if (window.entriesChart) {
+            if (window.entriesChart && typeof window.entriesChart.destroy === 'function') {
                 window.entriesChart.destroy();
                 window.entriesChart = null;
             }
             
-            if (window.tagsChart) {
+            if (window.tagsChart && typeof window.tagsChart.destroy === 'function') {
                 window.tagsChart.destroy();
                 window.tagsChart = null;
             }
             
-            if (window.moodChart) {
+            if (window.moodChart && typeof window.moodChart.destroy === 'function') {
                 window.moodChart.destroy();
                 window.moodChart = null;
             }
-            
+                    
             // Clean up audio
             if (window.currentAudio) {
                 window.currentAudio.pause();
@@ -3124,60 +3124,60 @@
       }
         
       function createMonthlyChart(data) {
-        const chartElement = document.getElementById('entriesChart');
-        if (!chartElement) return;
-        
-        const ctx = chartElement.getContext('2d');
-        if (!ctx) return;
-        
-        // Sort data by month
-        data.sort((a, b) => a.month.localeCompare(b.month));
-        
-        // Format month labels (from YYYY-MM to Month YYYY)
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const labels = data.map(item => {
-            if (!item.month || item.month.indexOf('-') === -1) return 'Unknown';
-            const [year, month] = item.month.split('-');
-            return `${months[parseInt(month) - 1] || 'Unknown'} ${year}`;
-        });
-        
-        const values = data.map(item => item.count);
-        
-        // Destroy previous chart if it exists
-        if (window.entriesChart) {
-            window.entriesChart.destroy();
-        }
-        
-        window.entriesChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Number of Entries',
-                    data: values,
-                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-color'),
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0
-                        }
-                    }
-                }
-            }
-        });
-    }
+          const chartElement = document.getElementById('entriesChart');
+          if (!chartElement) return;
+          
+          const ctx = chartElement.getContext('2d');
+          if (!ctx) return;
+          
+          // Sort data by month
+          data.sort((a, b) => a.month.localeCompare(b.month));
+          
+          // Format month labels (from YYYY-MM to Month YYYY)
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const labels = data.map(item => {
+              if (!item.month || item.month.indexOf('-') === -1) return 'Unknown';
+              const [year, month] = item.month.split('-');
+              return `${months[parseInt(month) - 1] || 'Unknown'} ${year}`;
+          });
+          
+          const values = data.map(item => item.count);
+          
+          // Destroy previous chart if it exists
+          if (window.entriesChart && typeof window.entriesChart.destroy === 'function') {
+              window.entriesChart.destroy();
+          }
+          
+          window.entriesChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Number of Entries',
+                      data: values,
+                      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-color'),
+                      borderRadius: 5
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                      legend: {
+                          display: false
+                      }
+                  },
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          ticks: {
+                              precision: 0
+                          }
+                      }
+                  }
+              }
+          });
+      }
     
     function createTagsChart(data) {
         const chartElement = document.getElementById('tagsChart');
