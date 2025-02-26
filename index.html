@@ -2367,104 +2367,120 @@
 
         // API Functions
         async function fetchWithAuth(url, options = {}) {
-              try {
-                  // Special case for file/image requests
-                  if (url.startsWith('/files/')) {
-                      const fileUrl = new URL(`${API_URL}${url}`);
-                      // Add auth token as a query parameter for images/files
-                      fileUrl.searchParams.append('auth', authToken);
-                      // Add a timestamp to prevent caching
-                      fileUrl.searchParams.append('t', Date.now());
-                      
-                      return fetch(fileUrl.toString(), options);
-                  }
-                  
-                  // Check if authentication is required
-                  if (!authToken) {
-                      return new Promise((resolve, reject) => {
-                          // Show auth modal
-                          openModal('authModal');
-                          
-                          // Set up event listener for auth modal submit
-                          const handleAuthModalSubmit = async () => {
-                              try {
-                                  const authCode = document.getElementById('authModalInput').value;
-                                  if (!authCode) {
-                                      throw new Error('Authentication code is required');
-                                  }
-                                  
-                                  const authResponse = await fetch(`${API_URL}/auth`, {
-                                      method: 'POST',
-                                      headers: { 'Content-Type': 'application/json' },
-                                      body: JSON.stringify({ authCode })
-                                  });
-                                  
-                                  if (!authResponse.ok) {
-                                      throw new Error('Authentication failed');
-                                  }
-                                  
-                                  authToken = authCode;
-                                  localStorage.setItem('diaryAuthToken', authToken);
-                                  closeModal('authModal');
-                                  
-                                  // Now retry the original request
-                                  const finalOptions = {
-                                      ...options,
-                                      headers: {
-                                          ...options.headers,
-                                          'X-Auth-Code': authToken
-                                      }
-                                  };
-                                  
-                                  const response = await fetch(`${API_URL}${url}`, finalOptions);
-                                  resolve(response);
-                              } catch (error) {
-                                  document.getElementById('authModalError').textContent = error.message;
-                                  document.getElementById('authModalError').style.display = 'block';
-                                  reject(error);
-                              }
-                          };
-                          
-                          document.getElementById('authModalSubmit').addEventListener('click', handleAuthModalSubmit, { once: true });
-                      });
-                  }
-                  
-                  // Add auth header
-                  const finalOptions = {
-                      ...options,
-                      headers: {
-                          ...options.headers,
-                          'X-Auth-Code': authToken
-                      }
-                  };
-                  
-                  // Add timeout to fetch requests
-                  const timeoutPromise = new Promise((_, reject) => {
-                      setTimeout(() => reject(new Error('Request timed out')), 30000); // 30 second timeout
-                  });
-                  
-                  // Race between the fetch and the timeout
-                  const response = await Promise.race([
-                      fetch(`${API_URL}${url}`, finalOptions),
-                      timeoutPromise
-                  ]);
-                  
-                  // Check for unauthorized response
-                  if (response.status === 401) {
-                      // Clear auth token and ask for re-authentication
-                      authToken = '';
-                      localStorage.removeItem('diaryAuthToken');
-                      
-                      // Recursive call to retry with authentication
-                      return fetchWithAuth(url, options);
-                  }
-                  
-                  return response;
-              } catch (error) {
-                  console.error(`Fetch error for ${url}:`, error);
-                  throw error;
-              }
-          }
+    try {
+        // Check if authentication is required
+        if (!authToken) {
+            return new Promise((resolve, reject) => {
+                // Show auth modal
+                openModal('authModal');
+                
+                // Set up event listener for auth modal submit
+                const handleAuthModalSubmit = async () => {
+                    try {
+                        const authCode = document.getElementById('authModalInput').value;
+                        if (!authCode) {
+                            throw new Error('Authentication code is required');
+                        }
+                        
+                        const authResponse = await fetch(`${API_URL}/auth`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ authCode })
+                        });
+                        
+                        if (!authResponse.ok) {
+                            throw new Error('Authentication failed');
+                        }
+                        
+                        authToken = authCode;
+                        localStorage.setItem('diaryAuthToken', authToken);
+                        closeModal('authModal');
+                        
+                        // Now retry the original request
+                        const finalOptions = {
+                            ...options,
+                            headers: {
+                                ...options.headers,
+                                'X-Auth-Code': authToken
+                            }
+                        };
+                        
+                        const response = await fetch(`${API_URL}${url}`, finalOptions);
+                        resolve(response);
+                    } catch (error) {
+                        document.getElementById('authModalError').textContent = error.message;
+                        document.getElementById('authModalError').style.display = 'block';
+                        reject(error);
+                    }
+                };
+                
+                document.getElementById('authModalSubmit').addEventListener('click', handleAuthModalSubmit, { once: true });
+            });
+        }
+        
+        // Add auth header
+        const finalOptions = {
+            ...options,
+            headers: {
+                ...options.headers,
+                'X-Auth-Code': authToken
+            }
+        };
+        
+        // Add timeout to fetch requests
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Request timed out')), 30000); // 30 second timeout
+        });
+        
+        // Race between the fetch and the timeout
+        const response = await Promise.race([
+            fetch(`${API_URL}${url}`, finalOptions),
+            timeoutPromise
+        ]);
+        
+        // Check for unauthorized response
+        if (response.status === 401) {
+            // Clear auth token and ask for re-authentication
+            authToken = '';
+            localStorage.removeItem('diaryAuthToken');
+            
+            // Recursive call to retry with authentication
+            return fetchWithAuth(url, options);
+        }
+        
+        return response;
+    } catch (error) {
+        console.error(`Fetch error for ${url}:`, error);
+        throw error;
+    }
+}
+
+// Add this new function to handle image loading
+function getImageUrl(imageId) {
+    // Instead of adding auth token as query param (which causes CORS issues),
+    // we'll return the URL and let the fetch API handle auth in headers
+    return `${API_URL}/files/${imageId}`;
+}
+
+// Add this function to preload images
+async function preloadImage(imageId) {
+    try {
+        const response = await fetchWithAuth(`/files/${imageId}`);
+        if (!response.ok) throw new Error('Failed to load image');
+        
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        // Cache the URL
+        if (!window.imageCache) window.imageCache = {};
+        window.imageCache[imageId] = url;
+        
+        return url;
+    } catch (error) {
+        console.error('Error preloading image:', error);
+        return null;
+    }
+}
         
         // Helper function to safely parse JSON
         function safeJSON(data) {
@@ -3160,19 +3176,19 @@
                             ` : ''}
                 `;
                 
-                // Add this inside the loadEntryDetail function where images are rendered
+                // Inside loadEntryDetail where you handle images:
                 if (entry.has_images && entry.images && entry.images.length > 0) {
-                    const timestamp = Date.now();
                     entryDetailHTML += `
                         <div class="entry-media-section">
                             <h3 class="entry-media-title"><i class="fas fa-images"></i> Images</h3>
                             <div class="entry-images">
                                 ${entry.images.map((image, index) => `
                                     <div class="entry-image">
-                                        <img src="${API_URL}/files/${image.id}?auth=${authToken}&t=${timestamp}" 
+                                        <img src="https://via.placeholder.com/200x200?text=Loading..." 
                                              alt="Entry image" 
-                                             onclick="viewImage('${image.id}', ${index})"
-                                             onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200?text=Image+Error'; this.parentNode.classList.add('image-error');">
+                                             data-image-id="${image.id}"
+                                             data-index="${index}"
+                                             class="entry-thumbnail">
                                         <div class="entry-image-actions">
                                             <button class="entry-image-action" onclick="event.stopPropagation(); downloadFile('${image.id}', '${image.filename}')">
                                                 <i class="fas fa-download"></i>
@@ -3190,8 +3206,43 @@
                     // Set up image gallery for the viewer
                     imageGallery = entry.images.map(image => ({
                         id: image.id,
-                        url: `${API_URL}/files/${image.id}?auth=${authToken}&t=${timestamp}`
+                        url: null // Will be filled when loaded
                     }));
+                    
+                    // After the HTML is set, load the images
+                    setTimeout(() => {
+                        document.querySelectorAll('.entry-thumbnail').forEach(async (img) => {
+                            const imageId = img.dataset.imageId;
+                            const index = parseInt(img.dataset.index);
+                            
+                            try {
+                                const response = await fetchWithAuth(`/files/${imageId}`);
+                                if (!response.ok) throw new Error('Failed to load image');
+                                
+                                const blob = await response.blob();
+                                const url = URL.createObjectURL(blob);
+                                
+                                // Cache the URL
+                                if (!window.imageCache) window.imageCache = {};
+                                window.imageCache[imageId] = url;
+                                
+                                // Update image source
+                                img.src = url;
+                                
+                                // Store in gallery
+                                if (imageGallery[index]) {
+                                    imageGallery[index].url = url;
+                                }
+                                
+                                // Add click event
+                                img.onclick = () => viewImage(imageId, index);
+                            } catch (error) {
+                                console.error('Error loading image:', error);
+                                img.src = 'https://via.placeholder.com/200x200?text=Image+Error';
+                                img.parentNode.classList.add('image-error');
+                            }
+                        });
+                    }, 100);
                 }
                 
                 // Add voice notes section if entry has voice notes
@@ -4874,7 +4925,6 @@
           return document.getElementById(id) !== null;
         }
 
-        // Image Viewer Functions
         function viewImage(imageId, index) {
             currentImageIndex = index;
             const viewer = document.getElementById('imageViewer');
@@ -4892,29 +4942,48 @@
             viewer.style.display = 'flex';
             setTimeout(() => viewer.classList.add('active'), 10);
             
-            // Create a URL with auth token
-            const timestamp = Date.now();
-            const imageUrl = `${API_URL}/files/${imageId}?auth=${authToken}&t=${timestamp}`;
+            // Check if we have a cached URL for this image
+            if (window.imageCache && window.imageCache[imageId]) {
+                viewerImage.onload = () => {
+                    const spinner = document.getElementById('imageViewerSpinner');
+                    if (spinner) spinner.remove();
+                    viewerImage.style.display = 'block';
+                };
+                viewerImage.src = window.imageCache[imageId];
+                return;
+            }
             
-            // Load the image
-            viewerImage.onload = () => {
-                // Remove spinner and show image
-                const spinner = document.getElementById('imageViewerSpinner');
-                if (spinner) spinner.remove();
-                viewerImage.style.display = 'block';
-            };
-            
-            viewerImage.onerror = () => {
-                // Remove spinner and show error message
-                const spinner = document.getElementById('imageViewerSpinner');
-                if (spinner) spinner.remove();
-                
-                viewerImage.src = 'https://via.placeholder.com/400x300?text=Image+Loading+Error';
-                viewerImage.style.display = 'block';
-                showNotification('error', 'Error', 'Failed to load image');
-            };
-            
-            viewerImage.src = imageUrl;
+            // Fetch the image with auth headers
+            fetchWithAuth(`/files/${imageId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load image');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Cache the URL
+                    if (!window.imageCache) window.imageCache = {};
+                    window.imageCache[imageId] = url;
+                    
+                    viewerImage.onload = () => {
+                        // Remove spinner and show image
+                        const spinner = document.getElementById('imageViewerSpinner');
+                        if (spinner) spinner.remove();
+                        viewerImage.style.display = 'block';
+                    };
+                    viewerImage.src = url;
+                })
+                .catch(error => {
+                    console.error('Error loading image:', error);
+                    // Remove spinner and show error message
+                    const spinner = document.getElementById('imageViewerSpinner');
+                    if (spinner) spinner.remove();
+                    
+                    viewerImage.src = 'https://via.placeholder.com/400x300?text=Image+Loading+Error';
+                    viewerImage.style.display = 'block';
+                    showNotification('error', 'Error', 'Failed to load image');
+                });
         }
 
         function closeImageViewer() {
