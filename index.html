@@ -43,7 +43,7 @@
             --info-color: #60a5fa;
         }
 
-        - {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -2367,93 +2367,120 @@
 
         // API Functions
         async function fetchWithAuth(url, options = {}) {
-            try {
-                // Check if authentication is required
-                if (!authToken) {
-                    return new Promise((resolve, reject) => {
-                        // Show auth modal
-                        openModal('authModal');
+    try {
+        // Check if authentication is required
+        if (!authToken) {
+            return new Promise((resolve, reject) => {
+                // Show auth modal
+                openModal('authModal');
+                
+                // Set up event listener for auth modal submit
+                const handleAuthModalSubmit = async () => {
+                    try {
+                        const authCode = document.getElementById('authModalInput').value;
+                        if (!authCode) {
+                            throw new Error('Authentication code is required');
+                        }
                         
-                        // Set up event listener for auth modal submit
-                        const handleAuthModalSubmit = async () => {
-                            try {
-                                const authCode = document.getElementById('authModalInput').value;
-                                if (!authCode) {
-                                    throw new Error('Authentication code is required');
-                                }
-                                
-                                const authResponse = await fetch(`${API_URL}/auth`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ authCode })
-                                });
-                                
-                                if (!authResponse.ok) {
-                                    throw new Error('Authentication failed');
-                                }
-                                
-                                authToken = authCode;
-                                localStorage.setItem('diaryAuthToken', authToken);
-                                closeModal('authModal');
-                                
-                                // Now retry the original request
-                                const finalOptions = {
-                                    ...options,
-                                    headers: {
-                                        ...options.headers,
-                                        'X-Auth-Code': authToken
-                                    }
-                                };
-                                
-                                const response = await fetch(`${API_URL}${url}`, finalOptions);
-                                resolve(response);
-                            } catch (error) {
-                                document.getElementById('authModalError').textContent = error.message;
-                                document.getElementById('authModalError').style.display = 'block';
-                                reject(error);
+                        const authResponse = await fetch(`${API_URL}/auth`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ authCode })
+                        });
+                        
+                        if (!authResponse.ok) {
+                            throw new Error('Authentication failed');
+                        }
+                        
+                        authToken = authCode;
+                        localStorage.setItem('diaryAuthToken', authToken);
+                        closeModal('authModal');
+                        
+                        // Now retry the original request
+                        const finalOptions = {
+                            ...options,
+                            headers: {
+                                ...options.headers,
+                                'X-Auth-Code': authToken
                             }
                         };
                         
-                        document.getElementById('authModalSubmit').addEventListener('click', handleAuthModalSubmit, { once: true });
-                    });
-                }
-                
-                // Add auth header
-                const finalOptions = {
-                    ...options,
-                    headers: {
-                        ...options.headers,
-                        'X-Auth-Code': authToken
+                        const response = await fetch(`${API_URL}${url}`, finalOptions);
+                        resolve(response);
+                    } catch (error) {
+                        document.getElementById('authModalError').textContent = error.message;
+                        document.getElementById('authModalError').style.display = 'block';
+                        reject(error);
                     }
                 };
                 
-                // Add timeout to fetch requests
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error('Request timed out')), 30000); // 30 second timeout
-                });
-                
-                // Race between the fetch and the timeout
-                const response = await Promise.race([
-                    fetch(`${API_URL}${url}`, finalOptions),
-                    timeoutPromise
-                ]);
-                
-                // Check for unauthorized response
-                if (response.status === 401) {
-                    // Clear auth token and ask for re-authentication
-                    authToken = '';
-                    localStorage.removeItem('diaryAuthToken');
-                    
-                    // Recursive call to retry with authentication
-                    return fetchWithAuth(url, options);
-                }
-                
-                return response;
-            } catch (error) {
-                console.error(`Fetch error for ${url}:`, error);
-                throw error;
-            }
+                document.getElementById('authModalSubmit').addEventListener('click', handleAuthModalSubmit, { once: true });
+            });
         }
+        
+        // Add auth header
+        const finalOptions = {
+            ...options,
+            headers: {
+                ...options.headers,
+                'X-Auth-Code': authToken
+            }
+        };
+        
+        // Add timeout to fetch requests
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Request timed out')), 30000); // 30 second timeout
+        });
+        
+        // Race between the fetch and the timeout
+        const response = await Promise.race([
+            fetch(`${API_URL}${url}`, finalOptions),
+            timeoutPromise
+        ]);
+        
+        // Check for unauthorized response
+        if (response.status === 401) {
+            // Clear auth token and ask for re-authentication
+            authToken = '';
+            localStorage.removeItem('diaryAuthToken');
+            
+            // Recursive call to retry with authentication
+            return fetchWithAuth(url, options);
+        }
+        
+        return response;
+    } catch (error) {
+        console.error(`Fetch error for ${url}:`, error);
+        throw error;
+    }
+}
+
+// Add this new function to handle image loading
+function getImageUrl(imageId) {
+    // Instead of adding auth token as query param (which causes CORS issues),
+    // we'll return the URL and let the fetch API handle auth in headers
+    return `${API_URL}/files/${imageId}`;
+}
+
+// Add this function to preload images
+async function preloadImage(imageId) {
+    try {
+        const response = await fetchWithAuth(`/files/${imageId}`);
+        if (!response.ok) throw new Error('Failed to load image');
+        
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        // Cache the URL
+        if (!window.imageCache) window.imageCache = {};
+        window.imageCache[imageId] = url;
+        
+        return url;
+    } catch (error) {
+        console.error('Error preloading image:', error);
+        return null;
+    }
+}
         
         // Helper function to safely parse JSON
         function safeJSON(data) {
@@ -3009,73 +3036,6 @@
                 entriesContainer.appendChild(createEntryElement(entry, viewMode));
             });
         }
-        function createEntryElement(entry, viewMode = 'grid') {
-    const div = document.createElement('div');
-    div.className = viewMode === 'grid' ? 'entry-card' : 'entry-card entry-card-list';
-    
-    // Add background styling if entry has a custom background
-    if (entry.background) {
-        if (!entry.background.startsWith('#')) {
-            // Image background
-            div.classList.add('has-background');
-            const timestamp = Date.now();
-            div.style.backgroundImage = `url(${API_URL}/files/${entry.background}?auth=${authToken}&t=${timestamp})`;
-            div.style.backgroundSize = 'cover';
-            div.style.backgroundPosition = 'center';
-            
-            // Add overlay for better text readability
-            const overlay = document.createElement('div');
-            overlay.className = 'entry-card-overlay';
-            div.appendChild(overlay);
-        } else {
-            // For color backgrounds, just set the background color
-            div.style.backgroundColor = entry.background;
-        }
-    }
-    
-    const innerDiv = document.createElement('div');
-    innerDiv.className = 'entry-card-inner';
-    
-    innerDiv.innerHTML = `
-        <div class="entry-header">
-            <div class="entry-date">
-                <i class="fas fa-calendar"></i>
-                ${entry.date}
-            </div>
-            <div class="entry-actions">
-                <button class="entry-action-btn edit" onclick="editEntry('${entry.id}')">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="entry-action-btn delete" onclick="confirmDeleteEntry('${entry.id}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-        <div class="entry-content">${entry.content}</div>
-        <div class="entry-footer">
-            <div class="entry-tags">
-                ${entry.tags && entry.tags.length > 0 ? entry.tags.map(tag => `<span class="entry-tag">${tag}</span>`).join('') : ''}
-            </div>
-            <div class="entry-indicators">
-                ${entry.mood ? `<div class="entry-indicator"><i class="fas fa-smile"></i> ${entry.mood}</div>` : ''}
-                ${entry.has_images ? `<div class="entry-indicator"><i class="fas fa-image"></i></div>` : ''}
-                ${entry.has_voice ? `<div class="entry-indicator"><i class="fas fa-microphone"></i></div>` : ''}
-            </div>
-        </div>
-    `;
-    
-    div.appendChild(innerDiv);
-    
-    // Make the whole card clickable to view entry details
-    div.addEventListener('click', (e) => {
-        // Don't navigate if clicking on action buttons
-        if (!e.target.closest('.entry-actions')) {
-            loadPage('entry-detail', { id: entry.id });
-        }
-    });
-    
-    return div;
-}
         
         function filterEntries(searchText) {
             const filteredEntries = allEntries.filter(entry => {
@@ -3095,59 +3055,72 @@
             renderEntries(filteredEntries);
         }
         
-        function createEntryHTML(entry) {
-            const timestamp = Date.now();
-            
-            let html = `<div class="entry-card" data-id="${entry.id}">`;
+        function createEntryElement(entry, viewMode = 'grid') {
+            const div = document.createElement('div');
+            div.className = viewMode === 'grid' ? 'entry-card' : 'entry-card entry-card-list';
             
             // Add background styling if entry has a custom background
             if (entry.background) {
-                if (entry.background.startsWith('#')) {
-                    // Color background
-                    html += `<div class="entry-card-inner" style="background-color: ${entry.background};">`;
-                } else {
+                if (!entry.background.startsWith('#')) {
                     // Image background
-                    html += `
-                        <div class="entry-card-overlay"></div>
-                        <div class="entry-card-inner" style="background-image: url(${API_URL}/files/${entry.background}?auth=${authToken}&t=${timestamp});">
-                    `;
-                    html = html.replace('<div class="entry-card"', '<div class="entry-card has-background"');
+                    div.classList.add('has-background');
+                    const timestamp = Date.now();
+                    div.style.backgroundImage = `url(${API_URL}/files/${entry.background}?auth=${authToken}&t=${timestamp})`;
+                    div.style.backgroundSize = 'cover';
+                    div.style.backgroundPosition = 'center';
+                    
+                    // Add overlay for better text readability
+                    const overlay = document.createElement('div');
+                    overlay.className = 'entry-card-overlay';
+                    div.appendChild(overlay);
+                } else {
+                    // For color backgrounds, just set the background color
+                    div.style.backgroundColor = entry.background;
                 }
-            } else {
-                html += `<div class="entry-card-inner">`;
             }
             
-            html += `
-                    <div class="entry-header">
-                        <div class="entry-date">
-                            <i class="fas fa-calendar"></i>
-                            ${entry.date}
-                        </div>
-                        <div class="entry-actions">
-                            <button class="entry-action-btn edit" onclick="event.stopPropagation(); editEntry('${entry.id}')">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="entry-action-btn delete" onclick="event.stopPropagation(); confirmDeleteEntry('${entry.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+            const innerDiv = document.createElement('div');
+            innerDiv.className = 'entry-card-inner';
+            
+            innerDiv.innerHTML = `
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <i class="fas fa-calendar"></i>
+                        ${entry.date}
                     </div>
-                    <div class="entry-content">${entry.content}</div>
-                    <div class="entry-footer">
-                        <div class="entry-tags">
-                            ${entry.tags && entry.tags.length > 0 ? entry.tags.map(tag => `<span class="entry-tag">${tag}</span>`).join('') : ''}
-                        </div>
-                        <div class="entry-indicators">
-                            ${entry.mood ? `<div class="entry-indicator"><i class="fas fa-smile"></i> ${entry.mood}</div>` : ''}
-                            ${entry.has_images ? `<div class="entry-indicator"><i class="fas fa-image"></i></div>` : ''}
-                            ${entry.has_voice ? `<div class="entry-indicator"><i class="fas fa-microphone"></i></div>` : ''}
-                        </div>
+                    <div class="entry-actions">
+                        <button class="entry-action-btn edit" onclick="editEntry('${entry.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="entry-action-btn delete" onclick="confirmDeleteEntry('${entry.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
-            </div>
+                <div class="entry-content">${entry.content}</div>
+                <div class="entry-footer">
+                    <div class="entry-tags">
+                        ${entry.tags && entry.tags.length > 0 ? entry.tags.map(tag => `<span class="entry-tag">${tag}</span>`).join('') : ''}
+                    </div>
+                    <div class="entry-indicators">
+                        ${entry.mood ? `<div class="entry-indicator"><i class="fas fa-smile"></i> ${entry.mood}</div>` : ''}
+                        ${entry.has_images ? `<div class="entry-indicator"><i class="fas fa-image"></i></div>` : ''}
+                        ${entry.has_voice ? `<div class="entry-indicator"><i class="fas fa-microphone"></i></div>` : ''}
+                    </div>
+                </div>
             `;
             
-            return html;
+            div.appendChild(innerDiv);
+            
+            // Make the whole card clickable to view entry details
+            div.addEventListener('click', (e) => {
+                // Don't navigate if clicking on action buttons
+                if (!e.target.closest('.entry-actions')) {
+                    loadPage('entry-detail', { id: entry.id });
+                }
+            });
+            
+            return div;
         }
 
         async function loadEntryDetail(id) {
@@ -3203,7 +3176,7 @@
                             ` : ''}
                 `;
                 
-                // Add images section if entry has images
+                // Inside loadEntryDetail where you handle images:
                 if (entry.has_images && entry.images && entry.images.length > 0) {
                     entryDetailHTML += `
                         <div class="entry-media-section">
@@ -3211,10 +3184,11 @@
                             <div class="entry-images">
                                 ${entry.images.map((image, index) => `
                                     <div class="entry-image">
-                                        <img src="${API_URL}/files/${image.id}" 
+                                        <img src="https://via.placeholder.com/200x200?text=Loading..." 
                                              alt="Entry image" 
-                                             onclick="viewImage('${image.id}', ${index})"
-                                             onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200?text=Image+Error'; this.parentNode.classList.add('image-error');">
+                                             data-image-id="${image.id}"
+                                             data-index="${index}"
+                                             class="entry-thumbnail">
                                         <div class="entry-image-actions">
                                             <button class="entry-image-action" onclick="event.stopPropagation(); downloadFile('${image.id}', '${image.filename}')">
                                                 <i class="fas fa-download"></i>
@@ -3232,8 +3206,43 @@
                     // Set up image gallery for the viewer
                     imageGallery = entry.images.map(image => ({
                         id: image.id,
-                        url: `${API_URL}/files/${image.id}`
+                        url: null // Will be filled when loaded
                     }));
+                    
+                    // After the HTML is set, load the images
+                    setTimeout(() => {
+                        document.querySelectorAll('.entry-thumbnail').forEach(async (img) => {
+                            const imageId = img.dataset.imageId;
+                            const index = parseInt(img.dataset.index);
+                            
+                            try {
+                                const response = await fetchWithAuth(`/files/${imageId}`);
+                                if (!response.ok) throw new Error('Failed to load image');
+                                
+                                const blob = await response.blob();
+                                const url = URL.createObjectURL(blob);
+                                
+                                // Cache the URL
+                                if (!window.imageCache) window.imageCache = {};
+                                window.imageCache[imageId] = url;
+                                
+                                // Update image source
+                                img.src = url;
+                                
+                                // Store in gallery
+                                if (imageGallery[index]) {
+                                    imageGallery[index].url = url;
+                                }
+                                
+                                // Add click event
+                                img.onclick = () => viewImage(imageId, index);
+                            } catch (error) {
+                                console.error('Error loading image:', error);
+                                img.src = 'https://via.placeholder.com/200x200?text=Image+Error';
+                                img.parentNode.classList.add('image-error');
+                            }
+                        });
+                    }, 100);
                 }
                 
                 // Add voice notes section if entry has voice notes
@@ -3347,6 +3356,7 @@
                                 </select>
                             </div>
                             
+                            
                             <div class="form-group">
                                 <label class="form-label">Location</label>
                                 <input type="text" id="entryLocation" class="form-input" placeholder="Where are you?" value="${entryToEdit && entryToEdit.location ? entryToEdit.location : ''}">
@@ -3392,6 +3402,7 @@
                                 <div class="media-preview" id="voicePreview"></div>
                             </div>
                             
+                            // Replace the entry style section in loadNewEntry function
                             <div class="form-group">
                                 <label class="form-label">Entry Style (Optional)</label>
                                 <div class="entry-customization">
@@ -3406,6 +3417,7 @@
                                     <div class="color-option" style="background-color: #ffdab9;" data-color="#ffdab9"></div>
                                 </div>
                             </div>
+                            
                         </form>
                     </div>
                 </div>
@@ -3578,7 +3590,7 @@
                 const selectedColor = document.querySelector('.color-option.selected');
                 const background = selectedColor && selectedColor.dataset.color !== 'none' 
                     ? selectedColor.dataset.color 
-                    : null;  // Set to null instead of default white
+                    : null;
                 
                 if (!content.trim()) {
                     showNotification('error', 'Error', 'Please enter some content for your entry');
@@ -3596,7 +3608,7 @@
                         location,
                         weather,
                         tags,
-                        background  // This will be null if "No Style" is selected
+                        background
                     };
                     
                     if (editId) {
@@ -4072,9 +4084,9 @@
         }
         
         function createEntryHTML(entry) {
-            let html = `
-                <div class="entry-card" data-id="${entry.id}">
-            `;
+            const timestamp = Date.now();
+            
+            let html = `<div class="entry-card" data-id="${entry.id}">`;
             
             // Add background styling if entry has a custom background
             if (entry.background) {
@@ -4085,8 +4097,9 @@
                     // Image background
                     html += `
                         <div class="entry-card-overlay"></div>
-                        <div class="entry-card-inner" style="background-image: url(${API_URL}/files/${entry.background});">
+                        <div class="entry-card-inner" style="background-image: url(${API_URL}/files/${entry.background}?auth=${authToken}&t=${timestamp});">
                     `;
+                    html = html.replace('<div class="entry-card"', '<div class="entry-card has-background"');
                 }
             } else {
                 html += `<div class="entry-card-inner">`;
@@ -4710,23 +4723,23 @@
         }
 
         function toggleTheme() {
-            theme = theme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            updateThemeIcon();
-            
-            // Reset any custom background to allow theme background to show
-            document.body.style.backgroundColor = '';
-            document.body.style.backgroundImage = '';
-            document.body.classList.remove('custom-bg-image', 'custom-bg-pattern');
-            
-            // Update settings if logged in
-            if (authToken) {
-                updateSettings({ theme }).catch(err => {
-                    console.error('Error updating theme setting:', err);
-                });
-            }
-        }
+              theme = theme === 'light' ? 'dark' : 'light';
+              document.documentElement.setAttribute('data-theme', theme);
+              localStorage.setItem('theme', theme);
+              updateThemeIcon();
+              
+              // Reset any custom background to allow theme background to show
+              document.body.style.backgroundColor = '';
+              document.body.style.backgroundImage = '';
+              document.body.classList.remove('custom-bg-image', 'custom-bg-pattern');
+              
+              // Update settings if logged in
+              if (authToken) {
+                  updateSettings({ theme }).catch(err => {
+                      console.error('Error updating theme setting:', err);
+                  });
+              }
+          }
 
         function getCurrentDateString() {
             const now = new Date();
@@ -4912,7 +4925,6 @@
           return document.getElementById(id) !== null;
         }
 
-        // Image Viewer Functions
         function viewImage(imageId, index) {
             currentImageIndex = index;
             const viewer = document.getElementById('imageViewer');
@@ -4930,38 +4942,49 @@
             viewer.style.display = 'flex';
             setTimeout(() => viewer.classList.add('active'), 10);
             
-            // Fetch the image with auth headers
-            fetch(`${API_URL}/files/${imageId}`, {
-                headers: {
-                    'X-Auth-Code': authToken
-                }
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load image');
-                return response.blob();
-            })
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
+            // Check if we have a cached URL for this image
+            if (window.imageCache && window.imageCache[imageId]) {
                 viewerImage.onload = () => {
-                    // Remove spinner and show image
                     const spinner = document.getElementById('imageViewerSpinner');
                     if (spinner) spinner.remove();
                     viewerImage.style.display = 'block';
                 };
-                viewerImage.src = url;
-            })
-            .catch(error => {
-                console.error('Error loading image:', error);
-                // Remove spinner and show error message
-                const spinner = document.getElementById('imageViewerSpinner');
-                if (spinner) spinner.remove();
-                
-                viewerImage.src = 'https://via.placeholder.com/400x300?text=Image+Loading+Error';
-                viewerImage.style.display = 'block';
-                showNotification('error', 'Error', 'Failed to load image');
-            });
+                viewerImage.src = window.imageCache[imageId];
+                return;
+            }
+            
+            // Fetch the image with auth headers
+            fetchWithAuth(`/files/${imageId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load image');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Cache the URL
+                    if (!window.imageCache) window.imageCache = {};
+                    window.imageCache[imageId] = url;
+                    
+                    viewerImage.onload = () => {
+                        // Remove spinner and show image
+                        const spinner = document.getElementById('imageViewerSpinner');
+                        if (spinner) spinner.remove();
+                        viewerImage.style.display = 'block';
+                    };
+                    viewerImage.src = url;
+                })
+                .catch(error => {
+                    console.error('Error loading image:', error);
+                    // Remove spinner and show error message
+                    const spinner = document.getElementById('imageViewerSpinner');
+                    if (spinner) spinner.remove();
+                    
+                    viewerImage.src = 'https://via.placeholder.com/400x300?text=Image+Loading+Error';
+                    viewerImage.style.display = 'block';
+                    showNotification('error', 'Error', 'Failed to load image');
+                });
         }
-
 
         function closeImageViewer() {
             const viewer = document.getElementById('imageViewer');
@@ -5153,3 +5176,4 @@
     </script>
 </body>
 </html>
+
